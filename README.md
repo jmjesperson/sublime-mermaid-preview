@@ -34,14 +34,31 @@ Control installs the unreleased `main` branch under the name `sublime-mermaid-pr
 commands silently do nothing, because the package only works when it's installed as
 `MermaidPreview`.
 
-**For development (local):**
+**For development (a clone of this repo):**
+
+Install the package through Package Control as above, so that's your normal copy. To work
+on the code or try changes before a release, switch Sublime to your clone, then switch back:
 
 ```sh
-scripts/install.sh      # symlink this folder into Sublime's Packages/ as MermaidPreview
-scripts/uninstall.sh    # remove that symlink (it never deletes a real folder)
+scripts/dev.sh on          # use this clone, live: edits reload on save
+scripts/dev.sh zip [REF]   # use the zip built from REF (default HEAD): what users download
+scripts/dev.sh off         # back to the Package Control copy
+scripts/dev.sh status      # which copy Sublime is using
 ```
 
-Sublime picks the package up without a restart.
+The script moves the Package Control copy aside and puts it back with `off`. Restart Sublime
+after switching. The zip is built from committed files only. If a change doesn't show up in
+Sublime, run `scripts/dev.sh status`: it says which copy is loaded and whether Sublime needs a
+restart.
+
+Add this to **Preferences → Package Settings → Package Control → Settings** once:
+
+```json
+"ignore_vcs_packages": ["MermaidPreview"]
+```
+
+Without it, Package Control's auto-upgrade runs `git pull` in your clone while `dev.sh on` is
+active, because the clone is a git repo.
 
 ## Usage
 

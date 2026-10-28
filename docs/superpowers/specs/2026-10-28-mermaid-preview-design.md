@@ -278,8 +278,8 @@ sublime-mermaid-preview/           ← repo root = package root; symlinked as Pa
     test_html.py  test_mmdc.py  test_naming.py  test_selection.py
     fixtures/large-flowchart.mmd   synthetic, ~25 nodes, subgraphs, <br/>, all 3 edge styles
   scripts/
-    install.sh                     symlink this folder to ~/Library/Application Support/Sublime Text/Packages/MermaidPreview
-    uninstall.sh                   remove that symlink, and only a symlink
+    dev.sh                         switch Sublime between this clone (symlink or built zip) and the
+                                   Package Control copy (replaced install.sh/uninstall.sh on 2026-10-28)
   README.md                        install, usage, optional mmdc setup, key binding example
   LICENSE                          MIT (my call; matters only at publishing)
 ```
@@ -369,6 +369,8 @@ These were decided by Jonny on 2026-10-28:
 - The last plan step refreshes `CLAUDE.md`.
 - Users install by adding `repository.json` through **Package Control: Add Repository**. The
   package isn't submitted to Package Control's default channel.
+- Jonny uses the same Package Control install day to day, and switches to a local copy
+  (`scripts/dev.sh`) only to develop and to test before a release.
 
 ## Left to the builder
 

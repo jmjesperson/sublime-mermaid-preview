@@ -42,15 +42,15 @@ creates a GitHub Release whose notes are `messages/<tag>.txt`.
    "Matching Mermaid versions" section name the new version.
 5. **Open a pull request, wait for green CI, and merge** into `main`.
 6. **Test what users will get, before tagging.** The download leaves out everything marked
-   `export-ignore` in `.gitattributes`. Build the same zip from `main` and install it:
+   `export-ignore` in `.gitattributes`. Install the same zip, built from `main`:
 
    ```sh
-   scripts/uninstall.sh
-   git archive --format=zip -o "$HOME/Library/Application Support/Sublime Text/Installed Packages/MermaidPreview.sublime-package" main
+   git switch main && git pull
+   scripts/dev.sh zip main
    ```
 
-   Restart Sublime. Preview the test fixture and export a PNG. Then delete that
-   `.sublime-package` and run `scripts/install.sh` to go back to the dev symlink.
+   Restart Sublime. Preview the test fixture and export a PNG. Then run `scripts/dev.sh off`
+   to go back to the Package Control copy.
 7. **Tag and push:**
 
    ```sh
@@ -60,7 +60,9 @@ creates a GitHub Release whose notes are `messages/<tag>.txt`.
    ```
 
    Check that the `Release` workflow succeeded and the GitHub Release exists.
-8. **Check the real install path.** In a Sublime without the dev symlink:
+8. **Check the real install path.** With `scripts/dev.sh off`, run
+   **Package Control: Upgrade Package** → `MermaidPreview`, or wait for the automatic upgrade,
+   and check that it moves to the new version. On a machine without the package:
    - Run **Package Control: Add Repository** with
      `https://raw.githubusercontent.com/jmjesperson/sublime-mermaid-preview/main/repository.json`.
      Not the plain GitHub URL: Package Control would install `main` under the repo's name.

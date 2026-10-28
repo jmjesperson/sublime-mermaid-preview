@@ -39,12 +39,36 @@ identifiers, and confirming before any outward-facing write (pushes, issues, rel
 ```sh
 python3 -m unittest discover tests            # unit tests, from the repo root
 python3 scripts/preview_fixture.py [f.mmd]    # build and open a preview without Sublime (--no-open: print path only)
-scripts/install.sh                            # symlink into Sublime's Packages/ as MermaidPreview
-scripts/uninstall.sh                          # remove that symlink (refuses anything that isn't one)
+scripts/dev.sh on|zip [REF]|off|status        # switch Sublime between this clone and the Package Control copy
 ```
 
 Sublime reloads a plugin when its `.py` file is saved. Check `View → Show Console` for load
 errors.
+
+## Which copy is Sublime running?
+
+Jonny's normal copy is the Package Control install, the same as every user's. It runs released
+code only. Edits in this repo reach Sublime only after `scripts/dev.sh on` and a Sublime
+restart.
+
+**Run `scripts/dev.sh status` before any manual check in Sublime,** and whenever Jonny says a
+change doesn't show up. It reads the files on disk and prints one of:
+
+- `DEV symlink -> <path>`, plus the branch and commit. Edits in that clone are live. Check it's
+  this clone and the branch you expect.
+- `PACKAGE CONTROL copy, version X`. Edits in this repo are **not** visible. To try them, run
+  `scripts/dev.sh on` and ask Jonny to restart Sublime.
+- `TEST ZIP built by dev.sh`. A frozen build from `dev.sh zip`. Edits since then aren't in it.
+- `RESTART NEEDED`. Sublime started before the last switch and may still run the old copy.
+
+Never assume the dev copy. When work in Sublime is finished, ask Jonny whether to run
+`scripts/dev.sh off`.
+
+`ignore_vcs_packages` in Package Control's settings must list `MermaidPreview` (set on
+2026-10-28). Otherwise Package Control's auto-upgrade runs `git pull` in this clone while it's
+symlinked. `dev.sh on` warns if the setting is missing.
+
+## Reloading
 
 Reloading was checked on 2026-10-28 with Sublime build 4215 and the symlinked install:
 
