@@ -1,57 +1,66 @@
 # Releasing MermaidPreview
 
-The process is lightweight GitHub Flow. `main` is always releasable, and every change arrives
-through a pull request with green CI. **A release is a semver tag on `main`.** Package Control
-reads the repo's tags directly; there is no build step and nothing to upload.
+This project uses a simple GitHub Flow:
+
+- `main` must always be ready to release.
+- Every change goes to `main` through a pull request, and CI must pass.
+- **A release is a version tag on `main`,** for example `0.2.0`.
+
+Package Control reads the tags in this repository directly. There is no build step, and you do
+not upload any files.
 
 ## What CI checks
 
-`.github/workflows/ci.yml` runs on every pull request and every push to `main`:
+`.github/workflows/ci.yml` runs for every pull request and every push to `main`:
 
 | Job | What it checks |
 |---|---|
-| `tests` | The unit tests on Python 3.14 (Sublime's plugin host version), and that every resource file is plain JSON |
-| `upgrade-messages` | `messages.json` is valid and every file it names exists (the check script from `kaste/upgrade-messages-test-action` v1.1, run directly) |
-| `package-review` | Package Control's own reviewer (`st_package_reviewer`), the same checks used on channel submissions |
+| `tests` | The unit tests, on Python 3.14 (the Python version of Sublime's plugin host). It also checks that every resource file is plain JSON. |
+| `upgrade-messages` | `messages.json` is valid, and every file that it names exists. This uses the check script from `kaste/upgrade-messages-test-action` v1.1. |
+| `package-review` | Package Control's own reviewer (`st_package_reviewer`). Package Control uses the same checks for new packages. |
 
-`.github/workflows/release.yml` runs when a semver tag is pushed. It reruns the tests, then
-creates a GitHub Release whose notes are `messages/<tag>.txt`.
+`.github/workflows/release.yml` runs when you push a version tag. It runs the tests again. Then
+it creates a GitHub Release. The release notes are the text of `messages/<tag>.txt`.
 
 ## Release checklist
 
-1. **Pick the version** from what's under `[Unreleased]` in `CHANGELOG.md`, following SemVer:
-   - **patch** (`0.1.1`) for fixes only;
-   - **minor** (`0.2.0`) for new features, or before 1.0.0 any change to behaviour or settings;
-   - **major** for a breaking change after 1.0.0.
+1. **Choose the version number.** Look at the changes under `[Unreleased]` in `CHANGELOG.md`
+   and follow [Semantic Versioning](https://semver.org):
+   - **patch** (for example `0.1.1`): only bug fixes.
+   - **minor** (for example `0.2.0`): new features. Before version 1.0.0, also use a minor
+     version for any change to behaviour or settings.
+   - **major**: a change that breaks existing use, after version 1.0.0.
 
-   Use no `v` prefix. Stay on `0.x` until the package has settled.
-2. **Update `CHANGELOG.md`** on a branch:
-   - Rename `## [Unreleased]` to `## [<version>] - YYYY-MM-DD` (the absolute release date).
-   - Start a new, empty `## [Unreleased]` above it.
-   - Update the links at the bottom: `[Unreleased]` compares `<version>...HEAD`, and
-     `[<version>]` compares the previous tag to `<version>` (or points at the tag itself for
-     the first release).
+   Do not put a `v` before the number. Keep the version below 1.0.0 until the package is
+   stable.
+2. **Update `CHANGELOG.md`** on a new branch:
+   - Change `## [Unreleased]` to `## [<version>] - YYYY-MM-DD`. Use the full release date.
+   - Add a new, empty `## [Unreleased]` section above it.
+   - Update the links at the end of the file. The `[Unreleased]` link compares
+     `<version>...HEAD`. The `[<version>]` link compares the previous tag with `<version>`.
+     For the first release, it links to the tag.
 
-   Every change should land in `[Unreleased]` with its own pull request, so this step is only
-   renaming.
+   Each pull request adds its own lines under `[Unreleased]`. So in this step you only rename
+   the section.
 3. **Write the upgrade message** on the same branch:
-   - Create `messages/<version>.txt`, a short plain-words version of the changelog entry.
-     Sublime shows it to users after they upgrade.
+   - Create `messages/<version>.txt`. Write a short, simple summary of the changelog entry.
+     Sublime shows this text to users after they upgrade.
    - Add `"<version>": "messages/<version>.txt"` to `messages.json`.
-4. **If you changed the bundled Mermaid,** check that `assets/LICENSES.md` and the README's
-   "Matching Mermaid versions" section name the new version.
-5. **Open a pull request, wait for green CI, and merge** into `main`.
-6. **Test what users will get, before tagging.** The download leaves out everything marked
-   `export-ignore` in `.gitattributes`. Build the same zip from `main` and install it:
+4. **If you changed the Mermaid file in `assets/`,** check that `assets/LICENSES.md` and the
+   README section "Matching Mermaid versions" show the new version.
+5. **Open a pull request.** Wait until CI passes, then merge it into `main`.
+6. **Before you create the tag, test what users will get.** The download does not include the
+   files marked `export-ignore` in `.gitattributes`. Install the same zip file, built from
+   `main`:
 
    ```sh
-   scripts/uninstall.sh
-   git archive --format=zip -o "$HOME/Library/Application Support/Sublime Text/Installed Packages/MermaidPreview.sublime-package" main
+   git switch main && git pull
+   scripts/dev.sh zip main
    ```
 
-   Restart Sublime. Preview the test fixture and export a PNG. Then delete that
-   `.sublime-package` and run `scripts/install.sh` to go back to the dev symlink.
-7. **Tag and push:**
+   Restart Sublime. Preview the test file `tests/fixtures/large-flowchart.mmd`, and export a
+   PNG. Then run `scripts/dev.sh off` to use the Package Control copy again.
+7. **Create the tag and push it:**
 
    ```sh
    git switch main && git pull
@@ -59,37 +68,44 @@ creates a GitHub Release whose notes are `messages/<tag>.txt`.
    git push origin <version>
    ```
 
-   Check that the `Release` workflow succeeded and the GitHub Release exists.
-8. **Check the real install path.** In a Sublime without the dev symlink:
-   - Run **Package Control: Add Repository** with
-     `https://raw.githubusercontent.com/jmjesperson/sublime-mermaid-preview/main/repository.json`.
-     Not the plain GitHub URL: Package Control would install `main` under the repo's name.
-   - Run **Package Control: Install Package**, then choose `MermaidPreview`.
+   Check that the `Release` workflow passed, and that the GitHub Release exists.
+8. **Check the install that users do.**
+   - In your own Sublime, after `scripts/dev.sh off`, run **Package Control: Upgrade Package**
+     and select `MermaidPreview`, or wait for the automatic upgrade. Check that the new version
+     is installed.
+   - On a computer that does not have the package, follow the [Install](README.md#install)
+     steps in the README.
 
-   `repository.json` names the package and points at the tags, as the channel entry below
-   does, so this installs exactly as a published package would. Before the channel entry
-   exists, it's also how anyone can install the package.
+**Do not move or delete a tag after you push it.** Users may already have that version. If a
+release has a problem, fix it on `main` and release the next patch version.
 
-If a tag turns out to be broken, don't move or delete it; users may already have it. Fix the
-problem on `main` and release the next patch version.
+## How users install the package
 
-## Listing in Package Control's default channel (not done; optional)
+Users add `repository.json` with **Package Control: Add Repository** (see the README). This
+file gives the package its name, `MermaidPreview`, and tells Package Control to install from
+the version tags. Do not move or rename `repository.json`, or remove it from `main`. If you do,
+existing users stop getting updates.
 
-MermaidPreview isn't in the default channel, by choice. Users install it by adding
-`repository.json` (see the README), and Package Control then updates it from the tags like
-any other package. The steps below are kept in case that changes.
+Do not tell users to add the GitHub page URL. With that URL, Package Control installs the `main`
+branch with the repository name, `sublime-mermaid-preview`, and the package does not work.
 
-Package Control's default channel is the list "Install Package" shows without adding anything. Packages are submitted by pull request to
-**https://github.com/sublimehq/package_control_channel**. The `packagecontrol/channel` repo is
-for libraries only. Follow the channel's submission guide, linked from its readme.
+## Listing in Package Control's default channel (not done, optional)
 
-1. Check the latest tag through **Add Repository** (step 8 above).
-2. Fork the channel repo. Add the entry below to `repository/m.json`, keeping the file's
-   alphabetical order.
-3. Open the pull request, filling in the channel's pull request template (its checklist and
-   the "my package is similar to ..." line). The channel's CI checks the entry, then a human
-   reviews it, which can take a few weeks. Answer the reviewer yourself: the template says the
-   review assesses whether the submitter will support the package long term.
+The default channel is the list of packages that **Install Package** shows to everyone. This
+package is not in the default channel. This was a decision, not a missing step. These notes are
+here in case the decision changes.
+
+Packages are added to the default channel with a pull request to
+**https://github.com/sublimehq/package_control_channel**. (The `packagecontrol/channel`
+repository is only for libraries.) Read the submission guide that the channel's readme links to.
+
+1. Check the latest release with **Add Repository** (step 8 above).
+2. Fork the channel repository. Add the entry below to `repository/m.json`, in alphabetical
+   order.
+3. Open the pull request, and complete the channel's pull request template: the checklist, and
+   the line "My package is similar to ...". The channel's CI checks the entry, and then a person
+   reviews it. This can take a few weeks. Answer the reviewer yourself. The template says that
+   the reviewer checks if the person who submits the package will support it for a long time.
 
 The channel entry:
 
@@ -109,15 +125,16 @@ The channel entry:
 
 What the fields mean:
 
-- **The entry is the same as the package in `repository.json`.** Keep the two in step.
-- **`name`** must be `MermaidPreview`. It becomes the installed package's name, and the code
-  reads its resources from `Packages/MermaidPreview/`. The repo name doesn't have to match.
-- **`"tags": true`** means every plain semver tag is a release.
-- **`">=4205"`** is the build where Sublime's plugin host moved to Python 3.14, according to
-  https://www.sublimetext.com/docs/api_environments.html. The package needs that host, because
-  older builds would run it on Python 3.3. Check the current docs before submitting.
-- **Before submitting,** search Package Control for similar packages. The guidelines ask authors
-  to consider improving an existing package before adding a new one, and reviewers ask about
-  it. `Mermaid` (SublimeText/Mermaid) has syntaxes, snippets and a build system that runs
-  `mmdc` on the saved file. It has no in-editor or browser preview, needs `mmdc` for any
-  output, and works on saved files only.
+- **This entry is the same as the package in `repository.json`.** If you change one, change the
+  other.
+- **`name`** must be `MermaidPreview`. It is the name of the installed package, and the code
+  loads its files from `Packages/MermaidPreview/`. The repository can have a different name.
+- **`"tags": true`** means that every version tag (for example `0.2.0`) is a release.
+- **`">=4205"`**: Sublime Text started to run plugins on Python 3.14 in build 4205, according
+  to https://www.sublimetext.com/docs/api_environments.html. The package needs Python 3.14.
+  Older builds would run it on Python 3.3. Check this page again before you submit.
+- **Before you submit,** search Package Control for similar packages. The guidelines ask authors
+  to think about improving an existing package before they add a new one, and reviewers ask
+  about this. The `Mermaid` package (SublimeText/Mermaid) has syntax highlighting, snippets, and
+  a build system that runs `mmdc` on a saved file. It has no preview in the editor or the
+  browser, it needs `mmdc` for any output, and it works only on saved files.

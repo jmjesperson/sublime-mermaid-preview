@@ -1,112 +1,111 @@
 # MermaidPreview
 
-MermaidPreview is a Sublime Text 4 package that renders the raw Mermaid in the current document
-(or the current selection) without leaving the editor:
+MermaidPreview is a package for Sublime Text 4. It shows a diagram from the Mermaid text in the
+current document, or in the current selection. It has two commands:
 
-- **Preview in Browser** opens the diagram in your default browser, where you can zoom and drag
-  around. It needs nothing installed, works offline, and your diagram text never leaves your
-  machine.
-- **Export PNG…** writes a high-resolution PNG with `mmdc` (mermaid-cli). This part is optional
-  and needs Node; see [PNG export (optional)](#png-export-optional).
+- **Preview in Browser** opens the diagram in your default browser. You can zoom and drag the
+  diagram. This command needs no other software. It works offline, and your diagram text stays
+  on your computer.
+- **Export PNG…** saves the diagram as a high-resolution PNG image. This command is optional.
+  It needs `mmdc` (mermaid-cli) and Node.js. See [PNG export (optional)](#png-export-optional).
 
 ## Install
 
-MermaidPreview isn't in Package Control's default list, so a search in **Install Package**
-won't find it until you add its repository once. You need Sublime Text 4 (build 4205 or later)
-with [Package Control](https://packagecontrol.io/installation) installed.
+You need Sublime Text 4, build 4205 or later, with
+[Package Control](https://packagecontrol.io/installation) installed.
 
-1. Open the Command Palette (`⌘⇧P`, or `Ctrl+Shift+P` on Windows and Linux) and run
-   **Package Control: Add Repository**.
+MermaidPreview is not in Package Control's default package list. For this reason, a search in
+**Install Package** does not find it at first. You must add its repository one time:
+
+1. Open the Command Palette. On macOS, press `⌘⇧P`. On Windows and Linux, press `Ctrl+Shift+P`.
+   Run **Package Control: Add Repository**.
 2. Paste this URL and press Enter:
 
    ```text
    https://raw.githubusercontent.com/jmjesperson/sublime-mermaid-preview/main/repository.json
    ```
 
-3. Run **Package Control: Install Package** and choose `MermaidPreview`.
+3. Run **Package Control: Install Package** and select `MermaidPreview`.
 
-Package Control installs the newest release and keeps it updated, like any other package.
-To uninstall, run **Package Control: Remove Package**, and optionally
-**Package Control: Remove Repository** for the URL above.
+Package Control installs the newest release. It also installs new releases automatically, as it
+does for other packages.
 
-Use this `repository.json` URL, not the GitHub page's URL. Given the plain GitHub URL, Package
-Control installs the unreleased `main` branch under the name `sublime-mermaid-preview`, and the
-commands silently do nothing, because the package only works when it's installed as
-`MermaidPreview`.
+To uninstall, run **Package Control: Remove Package** and select `MermaidPreview`. You can also
+run **Package Control: Remove Repository** and select the URL above.
 
-**For development (local):**
-
-```sh
-scripts/install.sh      # symlink this folder into Sublime's Packages/ as MermaidPreview
-scripts/uninstall.sh    # remove that symlink (it never deletes a real folder)
-```
-
-Sublime picks the package up without a restart.
+**Important:** use the `repository.json` URL above. Do not use the URL of the GitHub page. With
+the GitHub page URL, Package Control installs unreleased code with the wrong package name
+(`sublime-mermaid-preview`). Then the commands do nothing, because the package works only with
+the name `MermaidPreview`.
 
 ## Usage
 
-Open the Command Palette (`⌘⇧P`) and run one of these:
+Open the Command Palette and run one of these commands:
 
 - `MermaidPreview: Preview in Browser`
 - `MermaidPreview: Export PNG…`
 
-What gets rendered:
+Which text is used:
 
-- **Selection:** if you've selected text, only the selection renders. With several selections,
-  only the first renders.
-- **Otherwise:** the whole document renders.
-- **Raw Mermaid only:** the text must be Mermaid itself, such as `flowchart TB ...`. Markdown
-  with ```` ```mermaid ```` fences isn't supported.
+- **If you selected text,** only the selected text is used. If there are several selections,
+  only the first one is used.
+- **If you did not select text,** the whole document is used.
+- **The text must be Mermaid only,** for example `flowchart TB ...`. Markdown files with
+  ```` ```mermaid ```` blocks are not supported.
 
 In the browser:
 
-- **Zoom** with the scroll wheel or a trackpad pinch. It zooms toward the pointer.
-- **Pan** by dragging.
-- **Fit** (or the `0` key) fits the whole diagram on screen.
-- Each preview opens a new tab. The page is a file in Sublime's cache folder that gets
-  overwritten on every preview, so nothing is written next to your source.
-- If the diagram has a syntax error, the page shows Mermaid's error in red, then your source.
+- **Zoom** with the scroll wheel or with two fingers on a trackpad. The zoom is centred on the
+  pointer.
+- **Move** the diagram by dragging it.
+- **Fit**, or the `0` key, makes the whole diagram fit in the window.
+- Each preview opens a new browser tab.
+- The preview page is a file in Sublime's cache folder. Each preview replaces this file. Nothing
+  is saved next to your document.
+- If the diagram has a syntax error, the page shows Mermaid's error message in red, then your
+  text.
 
-Export PNG always asks where to save. When the document has a file name, the dialog starts in
-its folder with the PNG name filled in. A failed export never replaces an existing PNG; the
-error appears in the `MermaidPreview` output panel.
+**Export PNG** always asks where to save the file. If your document has a file name, the dialog
+opens in the same folder, with a PNG file name already filled in. If the export fails, an
+existing PNG file is not changed, and the error message appears in the `MermaidPreview` output
+panel.
 
 ## PNG export (optional)
 
-Export PNG runs `mmdc`, the Mermaid command-line renderer. It needs Node.js, plus a headless
-Chromium that mermaid-cli downloads on install (a few hundred MB). The preview doesn't need any
-of this.
+Export PNG uses `mmdc`, the Mermaid command-line program. `mmdc` needs Node.js. When you
+install it, it also downloads a Chromium browser, which is a few hundred MB. The browser
+preview does not need any of this.
 
-1. Install Node.js, from https://nodejs.org or through a version manager such as mise.
+1. Install Node.js from https://nodejs.org, or with a version manager such as mise.
 2. Run `npm install -g @mermaid-js/mermaid-cli`.
-3. Check that it works: `echo 'graph TD; A-->B' | mmdc -i - -o /tmp/test.png`.
+3. Test it: `echo 'graph TD; A-->B' | mmdc -i - -o /tmp/test.png`.
 
-**How MermaidPreview finds `mmdc`:**
+**How MermaidPreview finds `mmdc`.** It looks in this order:
 
-1. The `mmdc_path` setting, if set. If that path isn't an executable file, export stops with an
-   error. It does not search elsewhere.
-2. Otherwise, Sublime's `PATH`.
-3. Otherwise, `/opt/homebrew/bin/mmdc`, `/usr/local/bin/mmdc` and
-   `~/.local/share/mise/shims/mmdc`.
+1. The `mmdc_path` setting, if it is set. If this path is not a program file, the export stops
+   with an error. MermaidPreview does not look in other places.
+2. The folders in Sublime's `PATH`.
+3. `/opt/homebrew/bin/mmdc`, `/usr/local/bin/mmdc` and `~/.local/share/mise/shims/mmdc`.
 
-**Why this matters on macOS:** Sublime started from the Dock or Finder doesn't see your shell's
-`PATH`, so a `mmdc` that works in Terminal can be "not found" in Sublime. Set `mmdc_path` to the
-output of `which mmdc`.
+**Note for macOS.** When you start Sublime from the Dock or Finder, Sublime does not get the
+`PATH` from your terminal. So `mmdc` can work in Terminal but not in Sublime. To fix this, run
+`which mmdc` in Terminal, and put the result in the `mmdc_path` setting.
 
-`mmdc` is a Node script (`#!/usr/bin/env node`), so `node` must be findable too.
-MermaidPreview puts the folder containing `mmdc` at the front of `PATH`, which covers the usual
-installs. If `node` lives somewhere else, set `node_path` to its folder.
+`mmdc` is a Node.js script, so Sublime must also find `node`. MermaidPreview adds the folder
+that contains `mmdc` to the start of `PATH`. This works for most installations. If `node` is in
+a different folder, put that folder in the `node_path` setting.
 
 ## Security
 
-- **The preview page can't reach the network.** It has a Content-Security-Policy: scripts load
-  only from the local files, and images only inline. A diagram that embeds a remote image (for
-  example `<img src="https://…">` in a label) can't make a request.
-- **Mermaid's `securityLevel` stays at its default, `"strict"`.** A diagram can't change it.
-  Your `mermaid_config` file can, but **don't set `"loose"` or `"antiscript"`** if you preview
-  diagrams from untrusted sources: they let a diagram run script or click handlers, in the
-  browser and in `mmdc`'s headless Chromium.
-- **Files are written to Sublime's per-user cache folder,** never to a shared temp folder.
+- **The preview page cannot use the network.** It has a Content-Security-Policy. Scripts can
+  load only from the local files, and images must be inside the page. For example, if a diagram
+  contains `<img src="https://…">`, the browser does not send the request.
+- **Mermaid's `securityLevel` is `"strict"`,** which is Mermaid's default. A diagram cannot
+  change it. Your own `mermaid_config` file can change it. **Do not set `"loose"` or
+  `"antiscript"`** if you preview diagrams that come from other people. These levels let a
+  diagram run scripts or click actions, in the browser and in the Chromium that `mmdc` uses.
+- **Files are saved only in Sublime's cache folder for your user,** not in a temporary folder
+  that other users can share.
 
 ## Settings
 
@@ -115,37 +114,39 @@ Open **Preferences → Package Settings → MermaidPreview → Settings**, or ru
 
 | Setting | Default | Meaning |
 |---|---|---|
-| `mmdc_path` | `""` | Absolute path to `mmdc`. Empty means search, as described above. |
-| `node_path` | `""` | Folder containing `node`, if it isn't next to `mmdc`. |
-| `mmdc_scale` | `8` | Scale factor (`mmdc -s`). Higher values give a sharper, larger PNG. |
-| `mmdc_background` | `"white"` | PNG background (`mmdc -b`), such as `"transparent"` or `"#F0F0F0"`. |
-| `mmdc_timeout_seconds` | `120` | How long to wait for `mmdc`. |
-| `mermaid_config` | `""` | Path to your own Mermaid config JSON. Empty means the bundled `{"theme": "default"}`. |
+| `mmdc_path` | `""` | Full path to `mmdc`. If empty, MermaidPreview looks for it (see above). |
+| `node_path` | `""` | The folder that contains `node`, if it is not the folder of `mmdc`. |
+| `mmdc_scale` | `8` | Scale factor (`mmdc -s`). A higher number makes a larger, sharper PNG. |
+| `mmdc_background` | `"white"` | PNG background colour (`mmdc -b`), for example `"transparent"` or `"#F0F0F0"`. |
+| `mmdc_timeout_seconds` | `120` | The maximum time to wait for `mmdc`, in seconds. |
+| `mermaid_config` | `""` | Path to your own Mermaid config file (JSON). If empty, the package uses `{"theme": "default"}`. |
 
-The same Mermaid config goes to both the browser preview and `mmdc -c`, so the two render the
-same way. A user config replaces the default; it isn't merged with it.
+The browser preview and `mmdc -c` use the same Mermaid config, so the preview and the PNG look
+the same. If you set your own config file, it replaces the default config. The two are not
+combined.
 
 ## Matching Mermaid versions
 
-The preview bundles **Mermaid 12.2.0**, the version that mermaid-cli 12.0.0 uses, so the
-preview and the PNG agree. After you upgrade mermaid-cli, check which Mermaid it bundles:
+The preview includes **Mermaid 12.2.0**. This is the version that mermaid-cli 12.0.0 uses, so
+the preview and the PNG look the same. After you update mermaid-cli, check which Mermaid
+version it uses:
 
 ```sh
 grep -m1 '"version"' "$(npm root -g)/@mermaid-js/mermaid-cli/node_modules/mermaid/package.json"
 ```
 
-If the version differs, update the bundled copy:
+If the version is different, update the copy in this package:
 
 1. Copy `"$(npm root -g)/@mermaid-js/mermaid-cli/node_modules/mermaid/dist/mermaid.min.js"` to
-   `assets/mermaid.min.js`. Use this file, the classic build. The `.esm` build doesn't load from
-   a `file://` page.
-2. Update the version in `assets/LICENSES.md` and in this section.
-3. Save `mermaid_preview.py`, or restart Sublime, so the new file is copied on the next preview.
+   `assets/mermaid.min.js`. Use this file. Do not use the `.esm` file, because it does not load
+   from a `file://` page.
+2. Change the version number in `assets/LICENSES.md` and in this section.
+3. Save `mermaid_preview.py`, or restart Sublime. The next preview then uses the new file.
 
 ## Key binding (example)
 
-No key bindings ship with the package. To add one, open **Preferences → Key Bindings** and add
-an entry like this to the User file. This is an example only; pick any free key.
+The package does not add key bindings. To add one, open **Preferences → Key Bindings** and add a
+line like this one to the User file. This is only an example. Use any key that is free.
 
 ```json
 { "keys": ["ctrl+alt+m"], "command": "mermaid_preview_browser" }
@@ -153,19 +154,49 @@ an entry like this to the User file. This is an example only; pick any free key.
 
 ## Development
 
+### Use your clone in Sublime
+
+First install the package with Package Control, as described in [Install](#install). This is
+your normal copy. When you want to change the code, or test changes before a release, tell
+Sublime to use your clone of this repository. When you finish, switch back.
+
 ```sh
-python3 -m unittest discover tests                     # unit tests (standard library only)
-python3 scripts/preview_fixture.py [file.mmd]          # build and open a preview without Sublime
+scripts/dev.sh on          # use this clone. Saved changes load immediately.
+scripts/dev.sh zip [REF]   # use a zip built from REF (default: HEAD). This is what users download.
+scripts/dev.sh off         # use the Package Control copy again
+scripts/dev.sh status      # show which copy Sublime uses
 ```
 
-- Sublime reloads `mermaid_preview.py` when you save it, but not the files in
-  `mermaid_preview_core/`.
-- After editing the core, save `mermaid_preview.py` (or `touch` it) to reload everything.
-- `subl --command mermaid_preview_browser` runs the preview from a shell.
+- `on` and `zip` move the Package Control copy to a backup folder. `off` moves it back.
+- Restart Sublime after each switch.
+- `zip` uses only committed files.
+- **If you cannot see your change in Sublime,** run `scripts/dev.sh status`. It shows which copy
+  Sublime uses, and if Sublime must restart.
 
-CI runs on every pull request; see `RELEASING.md` for what it checks, the release checklist and
-how to publish to Package Control.
+Add this line one time to **Preferences → Package Settings → Package Control → Settings**:
+
+```json
+"ignore_vcs_packages": ["MermaidPreview"]
+```
+
+Without this line, Package Control's automatic upgrade runs `git pull` in your clone while
+`dev.sh on` is active, because your clone is a git repository.
+
+### Tests and reloading
+
+```sh
+python3 -m unittest discover tests                     # unit tests (standard library only)
+python3 scripts/preview_fixture.py [file.mmd]          # make and open a preview without Sublime
+```
+
+- When you save `mermaid_preview.py`, Sublime reloads it. When you save a file in
+  `mermaid_preview_core/`, Sublime does not reload it.
+- After you change a file in `mermaid_preview_core/`, save `mermaid_preview.py` again (or run
+  `touch` on it). This reloads all the code.
+- `subl --command mermaid_preview_browser` runs the preview from a terminal.
+
+CI runs on every pull request. `RELEASING.md` explains what CI checks and how to make a release.
 
 ## Licence
 
-MIT. See `LICENSE`. Mermaid is MIT-licensed; see `assets/LICENSES.md`.
+MIT. See `LICENSE`. Mermaid also uses the MIT licence. See `assets/LICENSES.md`.
