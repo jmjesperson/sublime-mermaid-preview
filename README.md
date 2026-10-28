@@ -14,10 +14,13 @@ MermaidPreview is a Sublime Text 4 package that renders the raw Mermaid in the c
 **From GitHub, through Package Control:**
 
 1. Run **Package Control: Add Repository** with
-   `https://github.com/jmjesperson/sublime-mermaid-preview`.
+   `https://raw.githubusercontent.com/jmjesperson/sublime-mermaid-preview/main/repository.json`.
 2. Run **Package Control: Install Package** and choose `MermaidPreview`.
 
-Package Control installs the newest release tag and keeps it updated.
+Package Control installs the newest release tag and keeps it updated. Use the
+`repository.json` URL, not the plain GitHub URL: given a plain repo URL, Package Control
+installs the `main` branch under the name `sublime-mermaid-preview`, and the package only
+works when it's installed as `MermaidPreview`.
 
 **For development (local):**
 

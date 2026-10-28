@@ -1,0 +1,17 @@
+{
+    "$schema": "sublime://packagecontrol.io/schemas/repository",
+    "schema_version": "4.0.0",
+    "packages": [
+        {
+            "name": "MermaidPreview",
+            "details": "https://github.com/jmjesperson/sublime-mermaid-preview",
+            "labels": ["mermaid", "diagram", "preview"],
+            "releases": [
+                {
+                    "sublime_text": ">=4205",
+                    "tags": true
+                }
+            ]
+        }
+    ]
+}

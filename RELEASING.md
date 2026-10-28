@@ -62,10 +62,12 @@ creates a GitHub Release whose notes are `messages/<tag>.txt`.
    Check that the `Release` workflow succeeded and the GitHub Release exists.
 8. **Check the real install path.** In a Sublime without the dev symlink:
    - Run **Package Control: Add Repository** with
-     `https://github.com/jmjesperson/sublime-mermaid-preview`.
+     `https://raw.githubusercontent.com/jmjesperson/sublime-mermaid-preview/main/repository.json`.
+     Not the plain GitHub URL: Package Control would install `main` under the repo's name.
    - Run **Package Control: Install Package**, then choose `MermaidPreview`.
 
-   This installs from your tags exactly as a published package would. Before the channel entry
+   `repository.json` names the package and points at the tags, as the channel entry below
+   does, so this installs exactly as a published package would. Before the channel entry
    exists, it's also how anyone can install the package.
 
 If a tag turns out to be broken, don't move or delete it; users may already have it. Fix the
@@ -103,6 +105,7 @@ What the fields mean:
 
 - **`name`** must be `MermaidPreview`. It becomes the installed package's name, and the code
   reads its resources from `Packages/MermaidPreview/`. The repo name doesn't have to match.
+  Keep this entry and `repository.json` the same.
 - **`"tags": true`** means every plain semver tag is a release.
 - **`">=4205"`** is the build where Sublime's plugin host moved to Python 3.14, according to
   https://www.sublimetext.com/docs/api_environments.html. The package needs that host, because

@@ -5,3 +5,4 @@ CLAUDE.md export-ignore
 .github/ export-ignore
 RELEASING.md export-ignore
 CHANGELOG.md export-ignore
+repository.json export-ignore
