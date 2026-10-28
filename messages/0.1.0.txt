@@ -1,0 +1,10 @@
+MermaidPreview 0.1.0
+====================
+
+First release.
+
+- Preview in Browser: renders raw Mermaid from the document or selection with
+  the bundled Mermaid 12.2.0, with zoom, drag and fit. Works offline.
+- Export PNG…: renders a PNG with mermaid-cli (mmdc), asking where to save.
+  A failed export never replaces an existing file.
+- One shared Mermaid config for both, so the preview matches the PNG.

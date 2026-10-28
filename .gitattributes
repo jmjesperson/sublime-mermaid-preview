@@ -1,0 +1,7 @@
+tests/ export-ignore
+docs/ export-ignore
+scripts/ export-ignore
+CLAUDE.md export-ignore
+.github/ export-ignore
+RELEASING.md export-ignore
+CHANGELOG.md export-ignore

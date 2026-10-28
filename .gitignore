@@ -1,0 +1,6 @@
+docs/superpowers/plans/
+*.pyc
+__pycache__/
+.DS_Store
+package-metadata.json
+*.sublime-workspace

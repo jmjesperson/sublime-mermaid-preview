@@ -1,0 +1,58 @@
+flowchart TB
+    SHOP["Shopper<br/>Web, iOS, Android"]
+    PAY["Payment provider<br/>(external)"]
+    CARRIER["Delivery carriers<br/>Post, Courier, Locker"]
+    MAIL["Email service"]
+
+    subgraph STORE["Storefront"]
+        WEB["Web shop<br/>Product pages"]
+        SEARCH["Search<br/>Filters and ranking"]
+        CART["Basket<br/>Line items, coupons"]
+    end
+
+    subgraph ACCOUNT["Accounts"]
+        LOGIN["Sign-in<br/>Passwords, passkeys"]
+        PROFILE["Profile<br/>Addresses, preferences"]
+    end
+
+    subgraph CHECKOUT["Checkout"]
+        ORDER["Order service<br/>Create and confirm"]
+        PRICE["Pricing<br/>Tax and discounts"]
+        FRAUD["Fraud check<br/>(beta)"]
+    end
+
+    subgraph STOCK["Inventory"]
+        INV["Stock levels<br/>Per warehouse"]
+        RESERVE["Reservations<br/>Hold for 15 min"]
+    end
+
+    subgraph FULFIL["Fulfilment"]
+        PICK["Pick and pack<br/>Warehouse app"]
+        SHIP["Shipping labels"]
+    end
+
+    subgraph NOTIFY["Notifications"]
+        EVENTS["Event bus"]
+        MSG["Message templates<br/>Email and push"]
+    end
+
+    SHOP -->|"browse"| WEB
+    WEB -->|"query"| SEARCH
+    SEARCH -.->|"suggestions"| WEB
+    WEB ==>|"add to basket"| CART
+    SHOP -->|"sign in"| LOGIN
+    LOGIN -->|"session"| PROFILE
+    CART ==>|"checkout"| ORDER
+    ORDER -->|"quote"| PRICE
+    PRICE -.->|"total"| ORDER
+    ORDER -.->|"score"| FRAUD
+    ORDER ==>|"reserve items"| RESERVE
+    RESERVE -->|"decrement"| INV
+    ORDER ==>|"authorise"| PAY
+    PAY -.->|"result"| ORDER
+    ORDER ==>|"order placed"| EVENTS
+    EVENTS -->|"pick list"| PICK
+    PICK -->|"parcel ready"| SHIP
+    SHIP -->|"book collection"| CARRIER
+    EVENTS -->|"order emails"| MSG
+    MSG -->|"send"| MAIL

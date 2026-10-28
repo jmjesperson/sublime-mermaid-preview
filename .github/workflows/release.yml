@@ -1,0 +1,32 @@
+name: Release
+
+# Pushing a semver tag (for example 0.1.0) is the release. Package Control picks the tag up on
+# its own; this workflow re-runs the tests and adds a GitHub Release with generated notes.
+on:
+  push:
+    tags:
+      - "[0-9]+.[0-9]+.[0-9]+"
+
+permissions:
+  contents: write
+
+jobs:
+  release:
+    runs-on: ubuntu-26.04
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+      - uses: actions/setup-python@6d4fd22b20465ccc0f7354476588e8df7c9ca0e0 # v7.1.0
+        with:
+          python-version: "3.14"
+      - name: Unit tests
+        run: python -m unittest discover tests
+      - name: Release notes come from messages/<tag>.txt
+        run: test -f "messages/${GITHUB_REF_NAME}.txt"
+      - name: Create GitHub Release
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          gh release create "$GITHUB_REF_NAME" --verify-tag --title "$GITHUB_REF_NAME" \
+            --notes-file "messages/${GITHUB_REF_NAME}.txt"

@@ -1,0 +1,67 @@
+name: CI
+
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.event.pull_request.number || github.run_id }}
+  cancel-in-progress: true
+
+permissions:
+  contents: read
+
+jobs:
+  tests:
+    runs-on: ubuntu-26.04
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+      - uses: actions/setup-python@6d4fd22b20465ccc0f7354476588e8df7c9ca0e0 # v7.1.0
+        with:
+          # Sublime Text's plugin host runs Python 3.14 (see .python-version).
+          python-version: "3.14"
+      - name: Unit tests
+        run: python -m unittest discover tests -v
+      - name: Resource files are plain JSON
+        run: |
+          for f in *.sublime-settings *.sublime-commands *.sublime-menu mermaid-config.json messages.json; do
+            python -m json.tool "$f" > /dev/null && echo "$f ok"
+          done
+
+  upgrade-messages:
+    runs-on: ubuntu-26.04
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+      # kaste/upgrade-messages-test-action's own check script, run directly: the action wraps it
+      # in actions/setup-python@v5, which targets the deprecated Node.js 20.
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+          repository: kaste/upgrade-messages-test-action
+          ref: 7a3b913352676772a3a1d6bb142172bcd7bebb1b # v1.1
+          path: .upgrade-messages-test
+      - uses: actions/setup-python@6d4fd22b20465ccc0f7354476588e8df7c9ca0e0 # v7.1.0
+        with:
+          python-version: "3.14"
+      - name: messages.json is valid and every message file exists
+        run: python .upgrade-messages-test/test.py
+
+  package-review:
+    runs-on: ubuntu-26.04
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+      - uses: actions/setup-python@6d4fd22b20465ccc0f7354476588e8df7c9ca0e0 # v7.1.0
+        with:
+          python-version: "3.12"
+      - name: Package Control reviewer
+        run: |
+          pip install st-package-reviewer==0.3.0
+          st_package_reviewer .

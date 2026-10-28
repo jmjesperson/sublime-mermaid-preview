@@ -1,0 +1,19 @@
+MermaidPreview
+==============
+
+Thanks for installing MermaidPreview.
+
+Open a file of raw Mermaid (for example `flowchart TB ...`) and run from the
+Command Palette:
+
+- MermaidPreview: Preview in Browser
+  Opens the diagram in your browser. Zoom with the scroll wheel or a pinch,
+  drag to pan, and press Fit (or 0) to see it all. Works offline; nothing
+  needs installing.
+
+- MermaidPreview: Export PNG…
+  Optional. Needs mermaid-cli (`npm install -g @mermaid-js/mermaid-cli`).
+  If Sublime can't find `mmdc`, set `mmdc_path` in
+  Preferences → Package Settings → MermaidPreview → Settings.
+
+If you've selected text, only the selection is rendered.

@@ -1,0 +1,12 @@
+[
+    { "caption": "MermaidPreview: Preview in Browser", "command": "mermaid_preview_browser" },
+    { "caption": "MermaidPreview: Export PNG…", "command": "mermaid_preview_export_png" },
+    {
+        "caption": "Preferences: MermaidPreview Settings",
+        "command": "edit_settings",
+        "args": {
+            "base_file": "${packages}/MermaidPreview/MermaidPreview.sublime-settings",
+            "default": "{\n\t$0\n}\n"
+        }
+    }
+]
