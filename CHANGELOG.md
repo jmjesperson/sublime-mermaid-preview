@@ -8,7 +8,9 @@ minor versions may change behaviour or settings.
 
 ## [Unreleased]
 
-Everything below is planned for the first release, 0.1.0.
+## [0.1.0] - 2026-10-28
+
+First release.
 
 ### Added
 
@@ -45,4 +47,5 @@ Everything below is planned for the first release, 0.1.0.
 - **CI actions and tools are pinned:** actions and checked-out scripts to commit SHAs,
   `st-package-reviewer` to an exact version, and checkouts don't keep the token.
 
-[Unreleased]: https://github.com/jmjesperson/sublime-mermaid-preview/commits/main
+[Unreleased]: https://github.com/jmjesperson/sublime-mermaid-preview/compare/0.1.0...HEAD
+[0.1.0]: https://github.com/jmjesperson/sublime-mermaid-preview/releases/tag/0.1.0
