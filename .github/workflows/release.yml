@@ -1,7 +1,7 @@
 name: Release
 
 # Pushing a semver tag (for example 0.1.0) is the release. Package Control picks the tag up on
-# its own; this workflow re-runs the tests and adds a GitHub Release with generated notes.
+# its own; this workflow re-runs the tests and adds a GitHub Release whose notes are messages/<tag>.txt.
 on:
   push:
     tags:
