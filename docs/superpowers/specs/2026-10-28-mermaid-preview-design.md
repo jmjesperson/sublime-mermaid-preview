@@ -345,12 +345,12 @@ Notes:
 - **Download SVG** button in the preview. It serializes the rendered SVG, so the result is the
   full diagram regardless of zoom. PNG from the browser is deliberately excluded: HTML labels
   commonly make the canvas export fail (not tested here), and `mmdc` already covers PNG.
-- **Publishing:**
-  - Move to a public GitHub repo, tag semver releases, and add `messages.json` with an install
-    message.
-  - Run the Package Control reviewer.
-  - Package Control asks authors to improve an existing package before adding another, so first
-    consider offering this as a contribution to `SublimeText/Mermaid`.
+- **Publishing:** done on 2026-10-28 as release `0.1.0`, through `repository.json` and
+  **Add Repository** rather than the default channel (see the decisions log). CI runs the
+  Package Control reviewer, and `messages.json` has an install message. `RELEASING.md` keeps
+  the channel submission steps in case that changes. If it does, Package Control asks authors
+  to improve an existing package before adding another, so first consider offering this as a
+  contribution to `SublimeText/Mermaid`.
 
 ## Decisions log
 
@@ -367,6 +367,8 @@ These were decided by Jonny on 2026-10-28:
 - No venv.
 - The preview bundles the same Mermaid version as `mmdc` (12.2.0).
 - The last plan step refreshes `CLAUDE.md`.
+- Users install by adding `repository.json` through **Package Control: Add Repository**. The
+  package isn't submitted to Package Control's default channel.
 
 ## Left to the builder
 

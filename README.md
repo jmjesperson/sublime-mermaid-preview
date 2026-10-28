@@ -11,16 +11,28 @@ MermaidPreview is a Sublime Text 4 package that renders the raw Mermaid in the c
 
 ## Install
 
-**From GitHub, through Package Control:**
+MermaidPreview isn't in Package Control's default list, so a search in **Install Package**
+won't find it until you add its repository once. You need Sublime Text 4 (build 4205 or later)
+with [Package Control](https://packagecontrol.io/installation) installed.
 
-1. Run **Package Control: Add Repository** with
-   `https://raw.githubusercontent.com/jmjesperson/sublime-mermaid-preview/main/repository.json`.
-2. Run **Package Control: Install Package** and choose `MermaidPreview`.
+1. Open the Command Palette (`⌘⇧P`, or `Ctrl+Shift+P` on Windows and Linux) and run
+   **Package Control: Add Repository**.
+2. Paste this URL and press Enter:
 
-Package Control installs the newest release tag and keeps it updated. Use the
-`repository.json` URL, not the plain GitHub URL: given a plain repo URL, Package Control
-installs the `main` branch under the name `sublime-mermaid-preview`, and the package only
-works when it's installed as `MermaidPreview`.
+   ```text
+   https://raw.githubusercontent.com/jmjesperson/sublime-mermaid-preview/main/repository.json
+   ```
+
+3. Run **Package Control: Install Package** and choose `MermaidPreview`.
+
+Package Control installs the newest release and keeps it updated, like any other package.
+To uninstall, run **Package Control: Remove Package**, and optionally
+**Package Control: Remove Repository** for the URL above.
+
+Use this `repository.json` URL, not the GitHub page's URL. Given the plain GitHub URL, Package
+Control installs the unreleased `main` branch under the name `sublime-mermaid-preview`, and the
+commands silently do nothing, because the package only works when it's installed as
+`MermaidPreview`.
 
 **For development (local):**
 
