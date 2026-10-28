@@ -82,8 +82,10 @@ for libraries only. Follow the channel's submission guide, linked from its readm
 1. Release at least one tag, and check it through **Add Repository** (step 8 above).
 2. Fork the channel repo. Add the entry below to `repository/m.json`, keeping the file's
    alphabetical order.
-3. Run the channel's own tests, as its readme describes, then open the pull request. A reviewer
-   bot and a human will review it.
+3. Open the pull request, filling in the channel's pull request template (its checklist and
+   the "my package is similar to ..." line). The channel's CI checks the entry, then a human
+   reviews it, which can take a few weeks. Answer the reviewer yourself: the template says the
+   review assesses whether the submitter will support the package long term.
 
 The channel entry:
 
@@ -111,5 +113,7 @@ What the fields mean:
   https://www.sublimetext.com/docs/api_environments.html. The package needs that host, because
   older builds would run it on Python 3.3. Check the current docs before submitting.
 - **Before submitting,** search Package Control for similar packages. The guidelines ask authors
-  to consider improving an existing package (`Mermaid` does syntax highlighting, not preview)
-  before adding a new one, and reviewers ask about it.
+  to consider improving an existing package before adding a new one, and reviewers ask about
+  it. `Mermaid` (SublimeText/Mermaid) has syntaxes, snippets and a build system that runs
+  `mmdc` on the saved file. It has no in-editor or browser preview, needs `mmdc` for any
+  output, and works on saved files only.
