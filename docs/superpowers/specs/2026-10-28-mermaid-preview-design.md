@@ -1,11 +1,11 @@
 # MermaidPreview — design
 
 Date: 2026-10-28
-Status: approved by Jonny on 2026-10-28
+Status: approved by the maintainer on 2026-10-28
 
 ## Intent
 
-Jonny regularly works with raw Mermaid text, often large flowcharts of 25+ nodes with
+The maintainer regularly works with raw Mermaid text, often large flowcharts of 25+ nodes with
 subgraphs, `<br/>` labels and three edge styles (`-->`, `-.->`, `==>`). Today he has to leave
 Sublime Text to see it: paste into an online editor, or run
 `pbpaste | mmdc -i - -o diagram.png -s 8`. Online editors also mean pasting private diagrams
@@ -18,13 +18,13 @@ without leaving the editor, in two ways:
    installs.
 2. **Export PNG.** Writes a high-resolution PNG via `mmdc`, which is an optional prerequisite.
 
-Its model is the MarkdownPreview package Jonny already uses: render to HTML, open the browser,
+Its model is the MarkdownPreview package the maintainer already uses: render to HTML, open the browser,
 keep the package light.
 
 ## Goals
 
 - Preview the current document or selection in the browser with one Command Palette command.
-- The preview looks like the plain Mermaid rendering Jonny already likes: the default theme,
+- The preview looks like the plain Mermaid rendering the maintainer already likes: the default theme,
   HTML labels and an inline error display (see "Look and feel").
 - Zoom (wheel or pinch, toward the cursor), drag to pan, and a fit-to-screen control. Opens fit
   to screen.
@@ -34,10 +34,10 @@ keep the package light.
 
 ## Non-goals (first version)
 
-- Markdown input. **Raw Mermaid only**: no ```` ```mermaid ```` fence extraction, decided by Jonny.
-- Live reload while typing. Each render opens a new browser tab, decided by Jonny.
+- Markdown input. **Raw Mermaid only**: no ```` ```mermaid ```` fence extraction, decided by the maintainer.
+- Live reload while typing. Each render opens a new browser tab, decided by the maintainer.
 - A download button in the browser page. This is a planned add-on once the core works, decided
-  by Jonny. When it comes, SVG only (see "Later").
+  by the maintainer. When it comes, SVG only (see "Later").
 - PNG export from the browser.
 - Publishing to Package Control. That's a later step.
 - Syntax highlighting. The existing `Mermaid` package on Package Control
@@ -61,7 +61,7 @@ keep the package light.
   (`plugin_host-3.14`; the legacy 3.3 host is deprecated). A package selects 3.14 with a
   `.python-version` file containing `3.14` in the package root. Without that file it gets 3.3.
   Source: https://www.sublimetext.com/docs/api_environments.html
-- Plugins can't use venvs or pip. **Runtime code is standard library only.** Jonny decided
+- Plugins can't use venvs or pip. **Runtime code is standard library only.** The maintainer decided
   against a venv for development as well.
 - Plugin `.py` files load only from the package root, as `<PackageName>.<module>`. Subpackages
   imported from a root plugin are allowed.
@@ -75,7 +75,7 @@ keep the package light.
 
   Sources: https://packagecontrol.io/docs/submitting_a_package,
   https://github.com/packagecontrol/st_package_reviewer/wiki/Package-checks
-- **The reference look** Jonny wants the preview to match:
+- **The reference look** the maintainer wants the preview to match:
   - Mermaid configured with only `mermaid.initialize({ startOnLoad: false, theme: 'default' })`.
   - No other config, so HTML labels stay at Mermaid's default (on).
   - On error, "Mermaid render error: <message>" in red, then the source in a `<pre>`.
@@ -105,9 +105,9 @@ Both commands are `TextCommand`s and work in any view, whatever its syntax.
 
 ### Input (both commands)
 
-- If any selection is non-empty, render **only the selected text**, decided by Jonny. With
+- If any selection is non-empty, render **only the selected text**, decided by the maintainer. With
   several non-empty selections, render the first and show a status-bar note that only the first
-  was used (*my call*).
+  was used (*design choice*).
 - Otherwise render the **whole document**.
 - If the text is empty or whitespace only, show a status-bar message and stop.
 - The text is passed to Mermaid as-is: no fence stripping and no rewriting.
@@ -120,7 +120,7 @@ Both commands are `TextCommand`s and work in any view, whatever its syntax.
    - the effective Mermaid config;
    - the diagram source.
 2. Write it to `<sublime.cache_path()>/MermaidPreview/preview.html`, overwritten on every render,
-   decided by Jonny. It goes in the per-user cache, not the system temp folder, which is shared on
+   decided by the maintainer. It goes in the per-user cache, not the system temp folder, which is shared on
    Linux (`/tmp`). Files never pile up next to the source.
 3. Open it with Python's `webbrowser.open` as a `file://` URL. Each render opens a new tab.
    - On macOS, Sublime's bundled `webbrowser` asks the system for the **http** handler, so the
@@ -132,9 +132,9 @@ Page behaviour:
 
 - Mermaid renders the source with `mermaid.render(...)` and the config from
   "Shared Mermaid config".
-- The diagram opens fit to screen (*my call*).
+- The diagram opens fit to screen (*design choice*).
 - **Zoom** is mouse wheel or trackpad pinch, centred on the cursor. **Pan** is click-drag. A
-  visible **Fit** button resets the view (*my call*: also the `0` key).
+  visible **Fit** button resets the view (*design choice*: also the `0` key).
 - **Zoom and pan transform only the view** (a CSS transform on a wrapper, or the SVG `viewBox`),
   never the SVG content. This keeps the later Download SVG add-on simple.
 - **On a render error**, the page shows "Mermaid render error: <message>" in red, then the source
@@ -158,7 +158,7 @@ round-trips exactly.
   because the package may be installed zipped as a `.sublime-package`. Its 16 MB size limit is
   fine.
 - Write `mermaid.min.js` and `preview.js` **next to `preview.html`** in the preview folder, and load
-  them with `<script src="...">`. Rewrite them only when the package version changes (*my call*).
+  them with `<script src="...">`. Rewrite them only when the package version changes (*design choice*).
 - Inlining is ruled out because the Mermaid 12.2.0 bundle contains `<!--` sequences. Under the
   HTML parser's script rules, those can swallow the rest of the page (found by the reviewer).
 - Vendor the classic **IIFE build** `mermaid.min.js`, which sets `globalThis.mermaid`. Do not
@@ -173,11 +173,11 @@ contain non-ASCII text.
 
 1. Find `mmdc` (see "Finding mmdc"). If it's missing, show an error dialog that names the setting
    and links to the README setup section, then stop.
-2. Open `sublime.save_dialog` every time, decided by Jonny.
+2. Open `sublime.save_dialog` every time, decided by the maintainer.
    - Name pre-filled with the source file's base name plus `.png` when the view has a file name.
      No pre-filled name for an unsaved buffer.
    - Starting directory is the source file's directory. For an unsaved buffer, Sublime's default
-     (*my call*).
+     (*design choice*).
    - If the user cancels, do nothing.
 3. Run, off the UI thread (`sublime.set_timeout_async`):
 
@@ -185,8 +185,8 @@ contain non-ASCII text.
    <mmdc> -i - -o - -e png -s <mmdc_scale> -b <mmdc_background> -c <effective-config.json> -q
    ```
 
-   - The source goes in on stdin, matching Jonny's `pbpaste | mmdc -i -` habit.
-   - Timeout: 120 s (*my call*).
+   - The source goes in on stdin, matching the maintainer's `pbpaste | mmdc -i -` habit.
+   - Timeout: 120 s (*design choice*).
    - **Write the PNG to stdout:** run with `-o - -e png` and capture it. Only on exit 0, write the
      bytes to a temp file in the target directory and `os.replace` it onto the chosen path. A
      failed run never touches an existing file, so a stale image can't happen. The reviewer
@@ -206,7 +206,7 @@ contain non-ASCII text.
 1. If the `mmdc_path` setting is set (an absolute path, with `~` expanded), use it.
 2. Otherwise use `shutil.which("mmdc")` on Sublime's `PATH`.
 3. Otherwise, as a convenience, search well-known locations: `/opt/homebrew/bin`,
-   `/usr/local/bin`, and mise's Node shims and installs (`~/.local/share/mise/shims`). *My call:*
+   `/usr/local/bin`, and mise's Node shims and installs (`~/.local/share/mise/shims`). *Design choice:*
    check the shims directory rather than globbing version folders, because version folders
    change on every Node upgrade.
 4. If nothing is found, show the "not found" error from Export PNG step 1.
@@ -228,25 +228,25 @@ contain non-ASCII text.
 |---|---|---|
 | `mmdc_path` | `""` | Absolute path to `mmdc`. Empty means search, as in "Finding mmdc". |
 | `node_path` | `""` | Directory containing `node`, if it isn't next to `mmdc`. |
-| `mmdc_scale` | `8` | `-s` scale, matching Jonny's habit. |
+| `mmdc_scale` | `8` | `-s` scale, matching the maintainer's habit. |
 | `mmdc_background` | `"white"` | `-b` background. |
 | `mmdc_timeout_seconds` | `120` | Subprocess timeout. |
 | `mermaid_config` | `""` | Path to a user Mermaid config JSON. Empty means the bundled default. |
 
 Also include a `Main.sublime-menu` entry under Preferences → Package Settings → MermaidPreview
-that opens the settings with Sublime's `edit_settings` command (*my call*; it's standard practice).
+that opens the settings with Sublime's `edit_settings` command (*design choice*; it's standard practice).
 
 ### Look and feel
 
 - Use Mermaid's default theme on a white page with a small toolbar (Fit, plus the zoom
   percentage), styled minimally.
-- HTML labels stay on, as in the reference look, so `<br/>` labels render the way Jonny is used to.
-- **The bundled Mermaid version is 12.2.0,** the same version Jonny's `mmdc` 12.0.0 uses, so
-  the preview and the exported PNG render the same way. This was decided by Jonny over matching
+- HTML labels stay on, as in the reference look, so `<br/>` labels render the way the maintainer is used to.
+- **The bundled Mermaid version is 12.2.0,** the same version the maintainer's `mmdc` 12.0.0 uses, so
+  the preview and the exported PNG render the same way. This was decided by the maintainer over matching
   the reference look's 11.17.2. Together with the shared config, the preview is "what the PNG will look
   like."
-- When Jonny upgrades `mmdc`, the bundled version can fall behind. The README documents how to
-  check `mmdc`'s Mermaid version and update `assets/mermaid.min.js` to match (*my call*: no
+- When the maintainer upgrades `mmdc`, the bundled version can fall behind. The README documents how to
+  check `mmdc`'s Mermaid version and update `assets/mermaid.min.js` to match (*design choice*: no
   automatic version check in the plugin).
 
 ## Structure
@@ -281,7 +281,7 @@ sublime-mermaid-preview/           ← repo root = package root; symlinked as Pa
     dev.sh                         switch Sublime between this clone (symlink or built zip) and the
                                    Package Control copy (replaced install.sh/uninstall.sh on 2026-10-28)
   README.md                        install, usage, optional mmdc setup, key binding example
-  LICENSE                          MIT (my call; matters only at publishing)
+  LICENSE                          MIT (design choice; matters only at publishing)
 ```
 
 Notes:
@@ -310,7 +310,7 @@ Notes:
 
 - **Unit tests** cover everything in `mermaid_preview_core/`, using `python3 -m unittest discover tests`
   from the repo root with the system Python (3.15 today). There are no third-party tools and no
-  venv, decided by Jonny. The code must also run on Sublime's 3.14, so avoid 3.15-only features.
+  venv, decided by the maintainer. The code must also run on Sublime's 3.14, so avoid 3.15-only features.
   Key cases:
   - **Escaping:** a source containing `</script>`, quotes, `<br/>` and non-ASCII text round-trips
     exactly into the page.
@@ -337,7 +337,7 @@ Notes:
 - **First:** `CLAUDE.md` already exists, hand-written on 2026-10-28, holding the build rules from
   this design. Follow it from the first line of code.
 - **Last step of the plan:** once the package works, refresh `CLAUDE.md` so it matches the code
-  as built, decided by Jonny. Run `/init` against the filled-out project or update the file by
+  as built, decided by the maintainer. Run `/init` against the filled-out project or update the file by
   hand. Keep the hand-written rules, and remove the "don't exist yet" note on the scripts.
 
 ## Later (not in the first version)
@@ -354,7 +354,7 @@ Notes:
 
 ## Decisions log
 
-These were decided by Jonny on 2026-10-28:
+These were decided by the maintainer on 2026-10-28:
 
 - Raw Mermaid only.
 - A selection renders only the selection.
@@ -369,7 +369,7 @@ These were decided by Jonny on 2026-10-28:
 - The last plan step refreshes `CLAUDE.md`.
 - Users install by adding `repository.json` through **Package Control: Add Repository**. The
   package isn't submitted to Package Control's default channel.
-- Jonny uses the same Package Control install day to day, and switches to a local copy
+- The maintainer uses the same Package Control install day to day, and switches to a local copy
   (`scripts/dev.sh`) only to develop and to test before a release.
 
 ## Left to the builder

@@ -26,7 +26,7 @@ First release.
   - It replaces the file atomically: a failed export never touches an existing file, and the
     file's permissions are kept.
   - Failures appear in the `MermaidPreview` output panel.
-- **Finding `mmdc`:** the `mmdc_path` setting (with no fallback when it's set), then `PATH`, then
+- **Finding `mmdc`:** the `mmdc_path` setting (if it is set, no other place is searched), then `PATH`, then
   Homebrew and mise shims. The folder containing `mmdc` goes at the front of `PATH`, so
   `node` is found when Sublime runs from the Dock.
 - **Settings:** `mmdc_path`, `node_path`, `mmdc_scale` (default 8), `mmdc_background`,
@@ -45,7 +45,7 @@ First release.
   folder.
 - **The README documents the risk of loosening Mermaid's `securityLevel`.**
 - **CI actions and tools are pinned:** actions and checked-out scripts to commit SHAs,
-  `st-package-reviewer` to an exact version, and checkouts don't keep the token.
+  `st-package-reviewer` to an exact version, and checkouts do not keep the token.
 
 [Unreleased]: https://github.com/jmjesperson/sublime-mermaid-preview/compare/0.1.0...HEAD
 [0.1.0]: https://github.com/jmjesperson/sublime-mermaid-preview/releases/tag/0.1.0

@@ -13,7 +13,7 @@ Command Palette:
 
 - MermaidPreview: Export PNG…
   Optional. Needs mermaid-cli (`npm install -g @mermaid-js/mermaid-cli`).
-  If Sublime can't find `mmdc`, set `mmdc_path` in
+  If Sublime cannot find `mmdc`, set `mmdc_path` in
   Preferences → Package Settings → MermaidPreview → Settings.
 
-If you've selected text, only the selection is rendered.
+If you selected text, only the selected text is rendered.
