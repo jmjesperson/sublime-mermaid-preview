@@ -73,13 +73,17 @@ creates a GitHub Release whose notes are `messages/<tag>.txt`.
 If a tag turns out to be broken, don't move or delete it; users may already have it. Fix the
 problem on `main` and release the next patch version.
 
-## Publishing to Package Control (first time only)
+## Listing in Package Control's default channel (not done; optional)
 
-Package Control is the "Install Package" list. Packages are submitted by pull request to
+MermaidPreview isn't in the default channel, by choice. Users install it by adding
+`repository.json` (see the README), and Package Control then updates it from the tags like
+any other package. The steps below are kept in case that changes.
+
+Package Control's default channel is the list "Install Package" shows without adding anything. Packages are submitted by pull request to
 **https://github.com/sublimehq/package_control_channel**. The `packagecontrol/channel` repo is
 for libraries only. Follow the channel's submission guide, linked from its readme.
 
-1. Release at least one tag, and check it through **Add Repository** (step 8 above).
+1. Check the latest tag through **Add Repository** (step 8 above).
 2. Fork the channel repo. Add the entry below to `repository/m.json`, keeping the file's
    alphabetical order.
 3. Open the pull request, filling in the channel's pull request template (its checklist and
@@ -105,9 +109,9 @@ The channel entry:
 
 What the fields mean:
 
+- **The entry is the same as the package in `repository.json`.** Keep the two in step.
 - **`name`** must be `MermaidPreview`. It becomes the installed package's name, and the code
   reads its resources from `Packages/MermaidPreview/`. The repo name doesn't have to match.
-  Keep this entry and `repository.json` the same.
 - **`"tags": true`** means every plain semver tag is a release.
 - **`">=4205"`** is the build where Sublime's plugin host moved to Python 3.14, according to
   https://www.sublimetext.com/docs/api_environments.html. The package needs that host, because
