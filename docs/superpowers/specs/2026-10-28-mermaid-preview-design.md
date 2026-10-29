@@ -379,6 +379,10 @@ These were decided by the maintainer on 2026-10-28:
   exist falls back to the old behaviour with a status bar message.
   It was first named `png_folder`. The maintainer renamed it to `save_folder` before the
   release, so that later export formats (for example SVG) can use the same setting.
+- 2026-10-29: the settings are documented in three places: a JSON Schema in
+  `sublime-package.json` (the source of truth, used by LSP-json), comments in the default
+  settings file, and a README section per setting. A test keeps them the same. The maintainer
+  chose documentation only, with no new type checks in the code, and a patch release (0.2.1).
 
 ## Left to the builder
 

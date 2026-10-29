@@ -8,6 +8,18 @@ minor versions may change behaviour or settings.
 
 ## [Unreleased]
 
+## [0.2.1] - 2026-10-29
+
+### Changed
+
+- **The default settings file explains each setting** in a comment: what it does, its values,
+  and an example.
+- **New JSON Schema for the settings** (`sublime-package.json`). With the LSP-json package,
+  Sublime shows descriptions and marks wrong values and unknown setting names in your User
+  settings file.
+- **The README describes each setting** with its type, default, an example, and what happens
+  with a wrong value.
+
 ## [0.2.0] - 2026-10-29
 
 ### Added
@@ -75,7 +87,8 @@ First release.
 - **CI actions and tools are pinned:** actions and checked-out scripts to commit SHAs,
   `st-package-reviewer` to an exact version, and checkouts do not keep the token.
 
-[Unreleased]: https://github.com/jmjesperson/sublime-mermaid-preview/compare/0.2.0...HEAD
+[Unreleased]: https://github.com/jmjesperson/sublime-mermaid-preview/compare/0.2.1...HEAD
+[0.2.1]: https://github.com/jmjesperson/sublime-mermaid-preview/compare/0.2.0...0.2.1
 [0.2.0]: https://github.com/jmjesperson/sublime-mermaid-preview/compare/0.1.1...0.2.0
 [0.1.1]: https://github.com/jmjesperson/sublime-mermaid-preview/compare/0.1.0...0.1.1
 [0.1.0]: https://github.com/jmjesperson/sublime-mermaid-preview/releases/tag/0.1.0

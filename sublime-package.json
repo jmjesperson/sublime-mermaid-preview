@@ -1,0 +1,53 @@
+{
+    "contributions": {
+        "settings": [
+            {
+                "file_patterns": ["/MermaidPreview.sublime-settings"],
+                "schema": {
+                    "$id": "sublime://settings/MermaidPreview",
+                    "type": "object",
+                    "additionalProperties": false,
+                    "properties": {
+                        "mmdc_path": {
+                            "type": ["string", "null"],
+                            "default": "",
+                            "description": "Full path to the mmdc program (mermaid-cli). ~ means your home folder. If empty, MermaidPreview looks on Sublime's PATH, then in /opt/homebrew/bin, /usr/local/bin and ~/.local/share/mise/shims. If you set a path and it is not a program file, Export PNG stops with an error and does not look in other places."
+                        },
+                        "node_path": {
+                            "type": ["string", "null"],
+                            "default": "",
+                            "description": "Full path to the folder that contains the node program. Set it only if node is not in the same folder as mmdc. ~ is not expanded here: write the full path, for example /Users/you/.local/share/mise/shims."
+                        },
+                        "mmdc_scale": {
+                            "type": "number",
+                            "exclusiveMinimum": 0,
+                            "default": 8,
+                            "description": "Scale factor for the PNG (mmdc -s). A higher number makes a larger, sharper image and a bigger file."
+                        },
+                        "mmdc_background": {
+                            "type": "string",
+                            "default": "white",
+                            "description": "Background colour of the PNG (mmdc -b). Use a CSS colour, for example \"white\", \"#F0F0F0\" or \"transparent\". It does not change the browser preview."
+                        },
+                        "mmdc_timeout_seconds": {
+                            "type": "number",
+                            "exclusiveMinimum": 0,
+                            "default": 120,
+                            "description": "The maximum time, in seconds, to wait for mmdc. If mmdc takes longer, the export stops, an existing PNG is not changed, and the MermaidPreview output panel shows \"mmdc timed out\"."
+                        },
+                        "mermaid_config": {
+                            "type": ["string", "null"],
+                            "default": "",
+                            "description": "Full path to your own Mermaid config file. ~ means your home folder. The file must contain a JSON object, for example {\"theme\": \"dark\"}. It replaces the default config {\"theme\": \"default\"}; the two are not combined. The browser preview and Export PNG both use it. If empty or null, the default config is used."
+                        },
+                        "save_folder": {
+                            "type": ["string", "null"],
+                            "default": "",
+                            "description": "Full path to the folder where the save dialog opens (now used by Export PNG), for example \"~/Downloads\". ~ means your home folder. It is used also when the document is saved in another folder. If empty or null, the dialog opens in the document's folder. If the folder does not exist, the dialog opens in the document's folder and the status bar shows a message."
+                        }
+                    }
+                }
+            }
+        ]
+    }
+}

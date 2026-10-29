@@ -48,6 +48,10 @@ general rules still apply:
   `CHANGELOG.md`.** Use the Keep a Changelog sections: Added, Changed, Fixed, Removed. Use
   Semantic Versioning. Before version 1.0.0, any change to behaviour or settings needs a new
   minor version.
+- **Every setting is described in three places:** `sublime-package.json` (the JSON Schema, the
+  source of truth), the comments in `MermaidPreview.sublime-settings`, and the README section
+  "Settings". When you add or change a setting, change all three.
+  `tests/test_settings_docs.py` checks that the keys and the defaults match.
 - **Write documentation in plain English.** Many readers speak English as a second language.
   Use short sentences and common words. Do not use contractions or idioms. Do not use personal
   names in the documentation. Write "the maintainer", "users" or "contributors".
@@ -125,6 +129,8 @@ This was checked on 2026-10-28 with Sublime build 4215 and the linked developmen
 - `assets/`: `preview.html` (the page template), `preview.js` (render, zoom, move, fit), and
   `mermaid.min.js`. `mermaid.min.js` is Mermaid 12.2.0, the IIFE build. It must be the same
   version as the Mermaid inside `mmdc`. Its licence is in `assets/LICENSES.md`.
+- `sublime-package.json`: the JSON Schema for the settings. LSP-json uses it in the User
+  settings file.
 - `mermaid-config.json`: the default Mermaid config. The preview and `mmdc -c` both use it.
 - `repository.json`: tells Package Control the package name and to install from version tags.
   Users add its URL with **Add Repository**. Do not move or rename it.
