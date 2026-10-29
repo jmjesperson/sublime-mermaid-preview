@@ -176,9 +176,9 @@ contain non-ASCII text.
 2. Open `sublime.save_dialog` every time, decided by the maintainer.
    - Name pre-filled with the source file's base name plus `.png` when the view has a file name.
      No pre-filled name for an unsaved buffer.
-   - Starting directory is the `png_folder` setting if it is set and is an existing folder (added
+   - Starting directory is the `save_folder` setting if it is set and is an existing folder (added
      in 0.2.0). Otherwise it is the source file's directory. For an unsaved buffer, Sublime's
-     default (*design choice*). A `png_folder` that is not an existing folder, not a full path,
+     default (*design choice*). A `save_folder` that is not an existing folder, not a full path,
      or not a string falls back, with a status bar message.
    - If the user cancels, do nothing.
 3. Run, off the UI thread (`sublime.set_timeout_async`):
@@ -234,7 +234,7 @@ contain non-ASCII text.
 | `mmdc_background` | `"white"` | `-b` background. |
 | `mmdc_timeout_seconds` | `120` | Subprocess timeout. |
 | `mermaid_config` | `""` | Path to a user Mermaid config JSON. Empty means the bundled default. |
-| `png_folder` | `""` | Folder where the save dialog opens. `~` is expanded. Empty means the source file's folder. |
+| `save_folder` | `""` | Folder where the save dialog opens. `~` is expanded. Empty means the source file's folder. |
 
 Also include a `Main.sublime-menu` entry under Preferences → Package Settings → MermaidPreview
 that opens the settings with Sublime's `edit_settings` command (*design choice*; it's standard practice).
@@ -374,9 +374,11 @@ These were decided by the maintainer on 2026-10-28:
   package isn't submitted to Package Control's default channel.
 - The maintainer uses the same Package Control install day to day, and switches to a local copy
   (`scripts/dev.sh`) only to develop and to test before a release.
-- 2026-10-29: a `png_folder` setting chooses where the PNG save dialog opens. The maintainer
+- 2026-10-29: a `save_folder` setting chooses where the PNG save dialog opens. The maintainer
   decided that it always wins over the document's folder, and that a folder that does not
   exist falls back to the old behaviour with a status bar message.
+  It was first named `png_folder`. The maintainer renamed it to `save_folder` before the
+  release, so that later export formats (for example SVG) can use the same setting.
 
 ## Left to the builder
 

@@ -17,7 +17,7 @@ import sublime_plugin  # noqa: E402
 from .mermaid_preview_core.config import ConfigError, load_effective_config  # noqa: E402
 from .mermaid_preview_core.export import export_png, failure_report, publish_preview  # noqa: E402
 from .mermaid_preview_core.mmdc import find_mmdc  # noqa: E402
-from .mermaid_preview_core.naming import default_png_name, page_title, png_dialog_folder  # noqa: E402
+from .mermaid_preview_core.naming import default_png_name, page_title, save_dialog_folder  # noqa: E402
 from .mermaid_preview_core.selection import pick_source  # noqa: E402
 
 # Built from the package's own name, so resources load even if the package is installed under
@@ -115,7 +115,7 @@ class MermaidPreviewExportPngCommand(sublime_plugin.TextCommand):
             return
 
         file_name = self.view.file_name()
-        folder, note = png_dialog_folder(file_name, settings.get("png_folder", ""))
+        folder, note = save_dialog_folder(file_name, settings.get("save_folder", ""))
         if note:
             _status(note + "; using the default folder")
 
