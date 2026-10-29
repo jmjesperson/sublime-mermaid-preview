@@ -11,8 +11,10 @@
   var viewport = document.getElementById("viewport");
   var stage = document.getElementById("stage");
   var zoomLabel = document.getElementById("zoom");
+  var LINE_HEIGHT = 16; // pixels per wheel "line", for mice that report deltaMode 1
   var view = { x: 0, y: 0, scale: 1 };
   var size = { width: 0, height: 0 };
+  var fitted = false; // true until the user zooms or pans; then resize keeps their view
 
   function showError(message) {
     document.body.textContent = "";
@@ -36,8 +38,17 @@
   }
 
   function fit() {
-    var w = viewport.clientWidth - 2 * FIT_MARGIN;
-    var h = viewport.clientHeight - 2 * FIT_MARGIN;
+    fitted = true;
+    if (!(size.width > 0 && size.height > 0)) {
+      // An empty or unmeasurable diagram: show it at 100% instead of dividing by zero.
+      view.scale = 1;
+      view.x = FIT_MARGIN;
+      view.y = FIT_MARGIN;
+      apply();
+      return;
+    }
+    var w = Math.max(1, viewport.clientWidth - 2 * FIT_MARGIN);
+    var h = Math.max(1, viewport.clientHeight - 2 * FIT_MARGIN);
     view.scale = clamp(Math.min(w / size.width, h / size.height));
     view.x = (viewport.clientWidth - size.width * view.scale) / 2;
     view.y = (viewport.clientHeight - size.height * view.scale) / 2;
@@ -51,6 +62,7 @@
     view.x = px - (px - view.x) * ratio;
     view.y = py - (py - view.y) * ratio;
     view.scale = next;
+    fitted = false;
     apply();
   }
 
@@ -68,8 +80,12 @@
     viewport.addEventListener("wheel", function (e) {
       e.preventDefault();
       var r = viewport.getBoundingClientRect();
+      // deltaY is in pixels, lines or pages, depending on the device (deltaMode 0, 1, 2).
+      var dy = e.deltaY;
+      if (e.deltaMode === 1) dy *= LINE_HEIGHT;
+      else if (e.deltaMode === 2) dy *= viewport.clientHeight;
       // Trackpad pinch arrives as a wheel event with ctrlKey set; it needs a stronger factor.
-      var factor = Math.exp(-e.deltaY * (e.ctrlKey ? 0.01 : 0.0015));
+      var factor = Math.exp(-dy * (e.ctrlKey ? 0.01 : 0.0015));
       zoomAt(e.clientX - r.left, e.clientY - r.top, factor);
     }, { passive: false });
 
@@ -86,6 +102,7 @@
       view.y += e.clientY - drag.y;
       drag.x = e.clientX;
       drag.y = e.clientY;
+      fitted = false;
       apply();
     });
     function endDrag(e) {
@@ -95,12 +112,16 @@
     }
     viewport.addEventListener("pointerup", endDrag);
     viewport.addEventListener("pointercancel", endDrag);
+    // The browser can take the pointer away without pointerup (for example on a window switch).
+    viewport.addEventListener("lostpointercapture", endDrag);
 
     document.getElementById("fit").addEventListener("click", fit);
     document.addEventListener("keydown", function (e) {
       if (e.key === "0" && !e.metaKey && !e.ctrlKey && !e.altKey) fit();
     });
-    window.addEventListener("resize", fit);
+    window.addEventListener("resize", function () {
+      if (fitted) fit();
+    });
   }
 
   function start() {

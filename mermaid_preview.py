@@ -7,6 +7,7 @@ for _name in [m for m in sys.modules if m.startswith(__package__ + ".mermaid_pre
 
 import hashlib  # noqa: E402
 import os  # noqa: E402
+import threading  # noqa: E402
 import urllib.request  # noqa: E402
 import webbrowser  # noqa: E402
 
@@ -14,12 +15,14 @@ import sublime  # noqa: E402
 import sublime_plugin  # noqa: E402
 
 from .mermaid_preview_core.config import ConfigError, load_effective_config  # noqa: E402
-from .mermaid_preview_core.export import export_png, publish_preview  # noqa: E402
+from .mermaid_preview_core.export import export_png, failure_report, publish_preview  # noqa: E402
 from .mermaid_preview_core.mmdc import find_mmdc  # noqa: E402
 from .mermaid_preview_core.naming import default_png_name, page_title  # noqa: E402
 from .mermaid_preview_core.selection import pick_source  # noqa: E402
 
-PACKAGE = "Packages/MermaidPreview/"
+# Built from the package's own name, so resources load even if the package is installed under
+# another name (for example the repository name, after "Add Repository" with the GitHub URL).
+PACKAGE = "Packages/{}/".format(__package__)
 SETTINGS_FILE = "MermaidPreview.sublime-settings"
 PANEL = "MermaidPreview"
 MMDC_HELP = ("Set mmdc_path in Preferences → Package Settings → MermaidPreview. "
@@ -82,10 +85,11 @@ class MermaidPreviewBrowserCommand(sublime_plugin.TextCommand):
         except ConfigError as e:
             _error(str(e))
             return
-        template, files, version = _load_assets()
-        sublime.set_timeout_async(lambda: self._open(template, files, version, source, config, title), 0)
+        sublime.set_timeout_async(lambda: self._open(source, config, title), 0)
 
-    def _open(self, template, files, version, source, config, title):
+    def _open(self, source, config, title):
+        # Loading and hashing the 5 MB Mermaid bundle happens here, off the UI thread.
+        template, files, version = _load_assets()
         path, error = publish_preview(_work_dir(), template, files, version, source, config, title)
         if error:
             _error(error)
@@ -116,7 +120,10 @@ class MermaidPreviewExportPngCommand(sublime_plugin.TextCommand):
             if path is None:
                 return
             _status("rendering PNG…")
-            sublime.set_timeout_async(lambda: self._export(path, source, config, mmdc, settings), 0)
+            # mmdc can take up to mmdc_timeout_seconds. Use a separate thread, not Sublime's
+            # shared async thread, so other plugins are not blocked while it runs.
+            threading.Thread(target=self._export, args=(path, source, config, mmdc, settings),
+                             daemon=True).start()
 
         sublime.save_dialog(
             on_done,
@@ -143,8 +150,7 @@ class MermaidPreviewExportPngCommand(sublime_plugin.TextCommand):
 
     def _show_failure(self, cmd, returncode, message):
         window = self.view.window() or sublime.active_window()
-        text = "Export PNG failed. The existing file, if any, was not changed.\n\n" \
-               "Command: {}\nExit code: {}\n\n{}\n".format(" ".join(cmd), returncode, message)
+        text = failure_report(cmd, returncode, message)
 
         def show():
             panel = window.create_output_panel(PANEL)

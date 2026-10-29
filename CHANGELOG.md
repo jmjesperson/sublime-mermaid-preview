@@ -8,6 +8,23 @@ minor versions may change behaviour or settings.
 
 ## [Unreleased]
 
+### Fixed
+
+- **Resizing the browser window keeps your zoom and position.** The diagram fits the window
+  again only if you have not zoomed or moved it.
+- **Mouse wheels that scroll by lines or pages zoom at a normal speed.**
+- **Dragging stops correctly** when the browser takes the pointer away, for example when you
+  switch windows during a drag.
+- **Fit works for a diagram that has no size,** instead of making the view invalid.
+- **A failed PNG export shows only the information it has.** It no longer shows
+  "Exit code: None" after a timeout.
+- **A `mermaid_config` setting that is not text shows a clear error.** A `null` value uses the
+  default config.
+- **The package works if it is installed under a different name,** for example after
+  **Add Repository** with the GitHub page URL.
+- **PNG export runs on its own thread,** so it does not block other packages while `mmdc` runs.
+- **The first preview does not pause Sublime** while it loads the Mermaid file.
+
 ## [0.1.0] - 2026-10-28
 
 First release.

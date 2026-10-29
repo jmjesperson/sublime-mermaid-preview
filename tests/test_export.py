@@ -3,7 +3,7 @@ import stat
 import tempfile
 import unittest
 
-from mermaid_preview_core.export import export_png, publish_preview
+from mermaid_preview_core.export import export_png, failure_report, publish_preview
 
 PNG = b"\x89PNG\r\n\x1a\n"
 
@@ -77,3 +77,22 @@ class PublishPreviewTest(ExportTestBase):
         path, error = publish_preview(self.work, "{{TITLE}}", {}, "v1", "graph TD", {}, "t")
         self.assertIsNone(path)
         self.assertIn(self.work, error)
+
+
+class FailureReportTest(unittest.TestCase):
+    def test_includes_command_exit_code_and_message(self):
+        text = failure_report(["mmdc", "-i", "-"], 1, "Parse error on line 2")
+        self.assertIn("Command: mmdc -i -\n", text)
+        self.assertIn("Exit code: 1\n", text)
+        self.assertIn("Parse error on line 2", text)
+        self.assertIn("The existing file, if any, was not changed.", text)
+
+    def test_timeout_has_no_exit_code_line(self):
+        text = failure_report(["mmdc"], None, "mmdc timed out after 120 seconds")
+        self.assertNotIn("Exit code", text)
+        self.assertIn("mmdc timed out after 120 seconds", text)
+
+    def test_failure_before_running_has_no_command_line(self):
+        text = failure_report([], None, "mmdc_timeout_seconds must be a number, got 'x'")
+        self.assertNotIn("Command:", text)
+        self.assertNotIn("Exit code", text)
