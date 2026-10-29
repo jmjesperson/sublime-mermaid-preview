@@ -67,7 +67,7 @@ In the browser:
 
 **Export PNG** always asks where to save the file. If your document has a file name, the dialog
 opens in the same folder, with a PNG file name already filled in. To open the dialog in a
-different folder every time, use the `png_folder` setting. If the export fails, an
+different folder every time, use the `save_folder` setting. If the export fails, an
 existing PNG file is not changed, and the error message appears in the `MermaidPreview` output
 panel.
 
@@ -121,7 +121,7 @@ Open **Preferences → Package Settings → MermaidPreview → Settings**, or ru
 | `mmdc_background` | `"white"` | PNG background colour (`mmdc -b`), for example `"transparent"` or `"#F0F0F0"`. |
 | `mmdc_timeout_seconds` | `120` | The maximum time to wait for `mmdc`, in seconds. |
 | `mermaid_config` | `""` | Path to your own Mermaid config file (JSON). If empty, the package uses `{"theme": "default"}`. |
-| `png_folder` | `""` | The folder where the Export PNG dialog opens, for example `"~/Downloads"`. Use a full path. `~` means your home folder. If empty, the dialog opens in the document's folder. If the folder does not exist, the dialog opens in the document's folder, and the status bar shows a message. |
+| `save_folder` | `""` | The folder where the save dialog opens (now used by Export PNG), for example `"~/Downloads"`. Use a full path. `~` means your home folder. If empty, the dialog opens in the document's folder. If the folder does not exist, the dialog opens in the document's folder, and the status bar shows a message. |
 
 The browser preview and `mmdc -c` use the same Mermaid config, so the preview and the PNG look
 the same. If you set your own config file, it replaces the default config. The two are not

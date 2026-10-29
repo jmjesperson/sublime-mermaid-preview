@@ -1,0 +1,18 @@
+MermaidPreview 0.2.0
+====================
+
+New setting: save_folder
+
+Use it to choose the folder where the save dialog opens. Export PNG uses it.
+
+    "save_folder": "~/Downloads"
+
+- Use a full path. "~" means your home folder.
+- The folder is used for every export, also when your document is saved in
+  another folder. The file name still comes from your document.
+- If the setting is empty, the dialog opens in the document's folder, as
+  before.
+- If the folder does not exist, the dialog opens in the document's folder,
+  and the status bar shows a message.
+
+To change it, open Preferences > Package Settings > MermaidPreview > Settings.
