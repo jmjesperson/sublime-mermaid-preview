@@ -82,6 +82,20 @@ zip_version() {
     zip_metadata "$1" | sed -n 's/.*"version": *"\([^"]*\)".*/\1/p' | head -1
 }
 
+# The newest release tag in this clone (run "git fetch --tags" to see new ones).
+latest_release() { git -C "$repo_root" tag --list '[0-9]*' --sort=-v:refname | head -1; }
+
+# Warn when a Package Control copy is older than the newest release. After each release, the
+# maintainer's own copy must be upgraded, the same way users get it.
+warn_if_outdated() {
+    local version="$1" latest
+    latest="$(latest_release)"
+    [ -n "$version" ] && [ -n "$latest" ] && [ "$version" != "$latest" ] || return 0
+    [ "$(printf '%s\n%s\n' "$version" "$latest" | sort -V | head -1)" = "$version" ] || return 0
+    echo "  OUT OF DATE: the Package Control copy is $version, but the newest release is $latest."
+    echo "  With scripts/dev.sh off, restart Sublime and run Package Control: Upgrade Package."
+}
+
 # Package Control replaces a package that has no package-metadata.json (it calls it
 # "unmanaged") with the newest release, each time Sublime starts. It also upgrades a package
 # whose version is older than the newest release. So the test zip gets metadata with a
@@ -118,12 +132,16 @@ status() {
         else
             echo "Sublime loads: PACKAGE CONTROL copy, version $version"
             echo "  changes in this repository are NOT visible until they are released and upgraded"
+            warn_if_outdated "$version"
             [ "$(mode)" = zip ] && echo "  warning: Package Control replaced the test zip; run scripts/dev.sh zip again"
         fi
     else
         echo "Sublime loads: nothing; MermaidPreview is not installed"
     fi
-    [ -e "$stash" ] && echo "  set aside: Package Control copy, version $(zip_version "$stash")"
+    if [ -e "$stash" ]; then
+        echo "  set aside: Package Control copy, version $(zip_version "$stash")"
+        warn_if_outdated "$(zip_version "$stash")"
+    fi
 
     local started switched
     started="$(sublime_started_at)"
@@ -165,6 +183,7 @@ off)
     if [ -e "$stash" ]; then
         mv "$stash" "$zip"
         echo "restored the Package Control copy: $zip"
+        warn_if_outdated "$(zip_version "$zip")"
     elif [ "$(mode)" != release ]; then
         echo "no Package Control copy was set aside; run Package Control: Install Package"
     fi

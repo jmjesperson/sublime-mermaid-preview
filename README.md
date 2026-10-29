@@ -110,22 +110,128 @@ a different folder, put that folder in the `node_path` setting.
 
 ## Settings
 
-Open **Preferences → Package Settings → MermaidPreview → Settings**, or run
-`Preferences: MermaidPreview Settings` from the Command Palette.
+To change a setting, open **Preferences → Package Settings → MermaidPreview → Settings**, or
+run `Preferences: MermaidPreview Settings` from the Command Palette. Sublime opens two files:
 
-| Setting | Default | Meaning |
+- **Left:** the default settings, with a comment for each setting. Do not change this file.
+- **Right:** your User file. Copy a setting there and change its value. A value in the User file
+  replaces the default. Add only the settings that you want to change.
+
+The settings file is JSON, but Sublime also accepts `//` comments and a comma after the last
+value. Example of a User file:
+
+```json
+{
+    // Save PNG files in Downloads.
+    "save_folder": "~/Downloads",
+    "mmdc_scale": 4
+}
+```
+
+| Setting | Type | Default |
 |---|---|---|
-| `mmdc_path` | `""` | Full path to `mmdc`. If empty, MermaidPreview looks for it (see above). |
-| `node_path` | `""` | The folder that contains `node`, if it is not the folder of `mmdc`. |
-| `mmdc_scale` | `8` | Scale factor (`mmdc -s`). A higher number makes a larger, sharper PNG. |
-| `mmdc_background` | `"white"` | PNG background colour (`mmdc -b`), for example `"transparent"` or `"#F0F0F0"`. |
-| `mmdc_timeout_seconds` | `120` | The maximum time to wait for `mmdc`, in seconds. |
-| `mermaid_config` | `""` | Path to your own Mermaid config file (JSON). If empty, the package uses `{"theme": "default"}`. |
-| `save_folder` | `""` | The folder where the save dialog opens (now used by Export PNG), for example `"~/Downloads"`. Use a full path. `~` means your home folder. If empty, the dialog opens in the document's folder. If the folder does not exist, the dialog opens in the document's folder, and the status bar shows a message. |
+| [`mmdc_path`](#mmdc_path) | text or `null` | `""` |
+| [`node_path`](#node_path) | text or `null` | `""` |
+| [`mmdc_scale`](#mmdc_scale) | number greater than 0 | `8` |
+| [`mmdc_background`](#mmdc_background) | text | `"white"` |
+| [`mmdc_timeout_seconds`](#mmdc_timeout_seconds) | number greater than 0 | `120` |
+| [`mermaid_config`](#mermaid_config) | text or `null` | `""` |
+| [`save_folder`](#save_folder) | text or `null` | `""` |
 
-The browser preview and `mmdc -c` use the same Mermaid config, so the preview and the PNG look
-the same. If you set your own config file, it replaces the default config. The two are not
-combined.
+**Schema for editors.** The package includes a JSON Schema for these settings, in
+`sublime-package.json`. If you install the **LSP-json** package, Sublime uses the schema in your
+User file. It shows a description when you hover over a setting, suggests setting names, and
+marks a wrong type or an unknown setting name. You do not need LSP-json to use MermaidPreview.
+
+**Paths.** "Full path" means a path that starts with `/`, or with `~`, which means your home
+folder (for example `~/Downloads`). `node_path` is different: it does not accept `~`.
+
+### `mmdc_path`
+
+- **Type:** text (a full path), or `null`
+- **Default:** `""`
+- **Example:** `"/opt/homebrew/bin/mmdc"`
+
+The full path to the `mmdc` program, which Export PNG uses. If it is empty or `null`,
+MermaidPreview looks for `mmdc` (see [How MermaidPreview finds `mmdc`](#png-export-optional)).
+
+If you set a path and it is not a program file, Export PNG stops with an error that shows the
+path. It does not look in other places.
+
+### `node_path`
+
+- **Type:** text (a full path to a folder), or `null`
+- **Default:** `""`
+- **Example:** `"/Users/you/.local/share/mise/shims"`
+
+The folder that contains the `node` program. Set it only if `node` is not in the same folder as
+`mmdc`. MermaidPreview puts this folder at the start of `PATH` when it runs `mmdc`.
+
+`~` is not expanded in this setting. Write the full path. After this folder, the system still
+looks in the folder of `mmdc` and on Sublime's `PATH`. If `node` is in none of them, `mmdc`
+cannot start, and the `MermaidPreview` output panel shows the error.
+
+### `mmdc_scale`
+
+- **Type:** number greater than 0
+- **Default:** `8`
+- **Example:** `4`
+
+The scale factor for the PNG (`mmdc -s`). A higher number makes a larger, sharper image and a
+bigger file. It does not change the browser preview.
+
+### `mmdc_background`
+
+- **Type:** text
+- **Default:** `"white"`
+- **Example:** `"transparent"` or `"#F0F0F0"`
+
+The background colour of the PNG (`mmdc -b`). Use a CSS colour name, a `#` colour code, or
+`"transparent"`. It does not change the browser preview.
+
+### `mmdc_timeout_seconds`
+
+- **Type:** number greater than 0
+- **Default:** `120`
+- **Example:** `300`
+
+The maximum time to wait for `mmdc`, in seconds. If `mmdc` takes longer, the export stops, an
+existing PNG file is not changed, and the `MermaidPreview` output panel shows
+`mmdc timed out after … seconds`. A very large diagram may need more time.
+
+### `mermaid_config`
+
+- **Type:** text (a full path to a file), or `null`
+- **Default:** `""`
+- **Example:** `"~/mermaid/dark.json"`
+
+The path to your own Mermaid config file. The file must contain a JSON object, for example
+`{"theme": "dark"}`. The keys are Mermaid's own config keys. See the
+[Mermaid configuration documentation](https://mermaid.js.org/config/schema-docs/config.html).
+
+- If it is empty or `null`, the package uses its default config, `{"theme": "default"}`.
+- Your file replaces the default config. The two are not combined.
+- The browser preview and `mmdc -c` use the same config, so the preview and the PNG look the
+  same.
+- If the file does not exist, is not valid JSON, or does not contain a JSON object, both commands
+  stop and show an error. A value that is not text (for example a number) also shows an error.
+- See [Security](#security) before you change `securityLevel`.
+
+### `save_folder`
+
+- **Type:** text (a full path to a folder), or `null`
+- **Default:** `""`
+- **Example:** `"~/Downloads"`
+
+The folder where the save dialog opens. Export PNG uses it now. Other export formats can use it
+later.
+
+- If it is set, the dialog opens in this folder, also when the document is saved in another
+  folder. The file name still comes from the document.
+- If it is empty or `null`, the dialog opens in the document's folder. For an unsaved document,
+  Sublime chooses the folder.
+- If the folder does not exist, the path is not a full path, or the value is not text, the dialog
+  opens in the document's folder, and the status bar shows a message.
 
 ## Matching Mermaid versions
 

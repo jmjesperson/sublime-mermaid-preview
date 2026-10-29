@@ -1,9 +1,47 @@
+// MermaidPreview settings.
+//
+// Do not change this file. Put your own values in the User file:
+// Preferences > Package Settings > MermaidPreview > Settings (the right side).
+// A value in the User file replaces the value here. Add only the settings you want to change.
+//
+// The README has a full description of each setting, with examples.
 {
+    // Full path to the mmdc program (mermaid-cli). Example: "/opt/homebrew/bin/mmdc".
+    // "~" means your home folder.
+    // If empty, MermaidPreview looks on Sublime's PATH, then in /opt/homebrew/bin,
+    // /usr/local/bin and ~/.local/share/mise/shims.
+    // If you set a path and it is not a program file, Export PNG stops with an error.
     "mmdc_path": "",
+
+    // Full path to the folder that contains the node program.
+    // Set it only if node is not in the same folder as mmdc.
+    // "~" is not expanded here. Write the full path.
     "node_path": "",
+
+    // Scale factor for the PNG (mmdc -s). A number greater than 0.
+    // A higher number makes a larger, sharper image and a bigger file.
     "mmdc_scale": 8,
+
+    // Background colour of the PNG (mmdc -b). A CSS colour, for example
+    // "white", "#F0F0F0" or "transparent". It does not change the browser preview.
     "mmdc_background": "white",
+
+    // The maximum time to wait for mmdc, in seconds. A number greater than 0.
+    // If mmdc takes longer, the export stops and an existing PNG is not changed.
     "mmdc_timeout_seconds": 120,
+
+    // Full path to your own Mermaid config file. Example: "~/mermaid/dark.json".
+    // The file must contain a JSON object, for example {"theme": "dark"}.
+    // It replaces the default config {"theme": "default"}. The two are not combined.
+    // The browser preview and Export PNG both use it.
+    // If empty or null, the default config is used.
     "mermaid_config": "",
+
+    // Full path to the folder where the save dialog opens (now used by Export PNG).
+    // Example: "~/Downloads". "~" means your home folder.
+    // It is used also when the document is saved in another folder.
+    // If empty or null, the dialog opens in the document's folder.
+    // If the folder does not exist, the dialog opens in the document's folder,
+    // and the status bar shows a message.
     "save_folder": ""
 }

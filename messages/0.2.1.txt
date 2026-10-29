@@ -1,0 +1,10 @@
+MermaidPreview 0.2.1
+====================
+
+Better documentation for the settings. Nothing else changed.
+
+- Open Preferences > Package Settings > MermaidPreview > Settings. The left
+  side now explains each setting, with an example.
+- If you use the LSP-json package, your User settings file now shows a
+  description when you hover over a setting. It also marks wrong values and
+  unknown setting names.

@@ -26,9 +26,11 @@ jobs:
           python-version: "3.14"
       - name: Unit tests
         run: python -m unittest discover tests -v
+      # The settings file has comments, which Sublime allows. tests/test_settings_docs.py
+      # parses it instead.
       - name: Resource files are plain JSON
         run: |
-          for f in *.sublime-settings *.sublime-commands *.sublime-menu mermaid-config.json messages.json; do
+          for f in *.sublime-commands *.sublime-menu mermaid-config.json messages.json sublime-package.json; do
             python -m json.tool "$f" > /dev/null && echo "$f ok"
           done
 

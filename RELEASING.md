@@ -70,9 +70,12 @@ it creates a GitHub Release. The release notes are the text of `messages/<tag>.t
 
    Check that the `Release` workflow passed, and that the GitHub Release exists.
 8. **Check the install that users do.**
-   - In your own Sublime, after `scripts/dev.sh off`, run **Package Control: Upgrade Package**
-     and select `MermaidPreview`, or wait for the automatic upgrade. Check that the new version
-     is installed.
+   - In your own Sublime, after `scripts/dev.sh off`, restart Sublime and run **Package
+     Control: Upgrade Package**. Select `MermaidPreview`, or wait for the automatic upgrade.
+     Check that the upgrade message for the new version opens.
+   - Run `scripts/dev.sh status`. It must show `PACKAGE CONTROL copy, version <version>`. If it
+     shows `OUT OF DATE`, the upgrade did not happen yet. **Do not skip this step.** The
+     release is finished only when your own copy is the new version.
    - On a computer that does not have the package, follow the [Install](README.md#install)
      steps in the README.
 
