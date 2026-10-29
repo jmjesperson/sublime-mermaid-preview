@@ -23,6 +23,15 @@ class LoadEffectiveConfigTest(unittest.TestCase):
             f.write(text)
         return path
 
+    def test_non_string_setting_is_a_config_error(self):
+        for value in (42, ["a.json"], {"theme": "dark"}, True):
+            with self.subTest(value=value):
+                with self.assertRaisesRegex(ConfigError, "mermaid_config must be a file path"):
+                    load_effective_config(DEFAULT, value)
+
+    def test_null_setting_gives_default(self):
+        self.assertEqual(load_effective_config(DEFAULT, None), {"theme": "default"})
+
     def test_empty_path_gives_default(self):
         self.assertEqual(load_effective_config(DEFAULT, ""), {"theme": "default"})
 

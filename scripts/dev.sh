@@ -97,10 +97,10 @@ status() {
             echo "Sublime loads: TEST ZIP built by dev.sh (no Package Control metadata): $zip"
         else
             echo "Sublime loads: PACKAGE CONTROL copy, version $version"
-            echo "  changes in this repo are NOT visible until they're released and upgraded"
+            echo "  changes in this repository are NOT visible until they are released and upgraded"
         fi
     else
-        echo "Sublime loads: nothing; MermaidPreview isn't installed"
+        echo "Sublime loads: nothing; MermaidPreview is not installed"
     fi
     [ -e "$stash" ] && echo "  set aside: Package Control copy, version $(zip_version "$stash")"
 
@@ -108,7 +108,7 @@ status() {
     started="$(sublime_started_at)"
     switched="$(cat "$switched_file" 2>/dev/null || true)"
     if [ -z "$started" ]; then
-        echo "Sublime isn't running; it loads the copy above when it starts"
+        echo "Sublime is not running. It loads the copy above when it starts."
     elif [ -n "$switched" ] && [ "$started" -lt "$switched" ]; then
         echo "RESTART NEEDED: Sublime started before the last switch, so it may still run the previous copy"
     fi

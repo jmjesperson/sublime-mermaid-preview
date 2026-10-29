@@ -29,8 +29,10 @@ general rules still apply:
   can be tested there. Keep `mermaid_preview.py` as a small Sublime layer.
 - **Plugin `.py` files go only in the package root folder.** Import the core with relative
   imports.
-- **Read package files with `sublime.load_resource("Packages/MermaidPreview/...")`.** Do not use
-  file system paths. The package can be installed as a zip file.
+- **Read package files with `sublime.load_resource(PACKAGE + "...")`.** `PACKAGE` in
+  `mermaid_preview.py` is built from `__package__`, so it is correct for any install name. Do
+  not write `Packages/MermaidPreview/` in code. Do not use file system paths. The package can be
+  installed as a zip file.
 - **Diagram text never leaves the computer.** Do not use online renderers. Do not load anything
   from a CDN when the diagram renders. JavaScript files are copied into `assets/`.
 - **Test diagrams must be invented.** They must not look like any real system, because the

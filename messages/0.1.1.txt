@@ -1,0 +1,20 @@
+MermaidPreview 0.1.1
+====================
+
+This version fixes bugs. There are no new features or settings.
+
+Preview in Browser:
+- When you resize the window, your zoom and position stay the same. The
+  diagram fits the window again only if you have not zoomed or moved it.
+- Mouse wheels that scroll by lines or pages now zoom at a normal speed.
+- Dragging stops correctly if you switch windows during a drag.
+- The first preview does not pause Sublime while the Mermaid file loads.
+
+Export PNG:
+- The export runs on its own thread, so other packages do not wait for it.
+- A failed export shows only the information it has. It no longer shows
+  "Exit code: None" after a timeout.
+
+Settings:
+- If mermaid_config is not text, you see a clear error. The value null uses
+  the default config.

@@ -21,6 +21,22 @@ class ExportOutcome:
     returncode: int | None
 
 
+def failure_report(command: list[str], returncode: int | None, message: str) -> str:
+    """The text for the output panel after a failed export.
+
+    The command and exit code lines appear only when mmdc ran and exited.
+    """
+    lines = ["Export PNG failed. The existing file, if any, was not changed.", ""]
+    if command:
+        lines.append("Command: " + " ".join(command))
+    if returncode is not None:
+        lines.append("Exit code: {}".format(returncode))
+    if command or returncode is not None:
+        lines.append("")
+    lines.append(message)
+    return "\n".join(lines) + "\n"
+
+
 def publish_preview(work_dir: str, template: str, assets: dict[str, str], assets_version: str,
                     source: str, config: dict, title: str) -> tuple[str | None, str | None]:
     """Write the preview page; return (page_path, None) or (None, error message)."""
