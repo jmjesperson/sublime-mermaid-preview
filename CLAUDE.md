@@ -86,9 +86,23 @@ says that a change is not visible. It checks the files on disk and prints one of
   time Sublime starts (seen on 2026-10-29). The high version also stops automatic upgrades.
 - `warning: Package Control replaced the test zip`. Run `scripts/dev.sh zip` again.
 - `RESTART NEEDED`. Sublime started before the last switch, so it may still use the old copy.
+- `OUT OF DATE`. The Package Control copy (in use or set aside) is older than the newest release
+  tag. Ask the user to upgrade it (see below) before you start new work.
 
 Never assume that Sublime uses the development copy. When the work in Sublime is finished, ask
 the user if you should run `scripts/dev.sh off`.
+
+**Upgrade the Package Control copy at the end of every release.** A release is not finished
+when the tag is pushed. After the `Release` workflow passes:
+
+1. Run `scripts/dev.sh off`.
+2. Ask the user to restart Sublime and run **Package Control: Upgrade Package**, and to check
+   that the upgrade message for the new version opens.
+3. Run `scripts/dev.sh status`. It must show `PACKAGE CONTROL copy, version <new version>`, with
+   no `OUT OF DATE` line. Do not start the next change before this is true.
+
+This keeps the maintainer on the same version as users, and it tests the upgrade path that users
+get.
 
 Package Control's settings must include `"ignore_vcs_packages": ["MermaidPreview"]`. This was
 set on the maintainer's computer on 2026-10-28. Without it, Package Control's automatic upgrade
