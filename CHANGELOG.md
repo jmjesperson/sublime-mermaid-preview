@@ -8,6 +8,8 @@ minor versions may change behaviour or settings.
 
 ## [Unreleased]
 
+## [0.1.1] - 2026-10-29
+
 ### Fixed
 
 - **Resizing the browser window keeps your zoom and position.** The diagram fits the window
@@ -64,5 +66,6 @@ First release.
 - **CI actions and tools are pinned:** actions and checked-out scripts to commit SHAs,
   `st-package-reviewer` to an exact version, and checkouts do not keep the token.
 
-[Unreleased]: https://github.com/jmjesperson/sublime-mermaid-preview/compare/0.1.0...HEAD
+[Unreleased]: https://github.com/jmjesperson/sublime-mermaid-preview/compare/0.1.1...HEAD
+[0.1.1]: https://github.com/jmjesperson/sublime-mermaid-preview/compare/0.1.0...0.1.1
 [0.1.0]: https://github.com/jmjesperson/sublime-mermaid-preview/releases/tag/0.1.0
