@@ -4,5 +4,6 @@
     "mmdc_scale": 8,
     "mmdc_background": "white",
     "mmdc_timeout_seconds": 120,
-    "mermaid_config": ""
+    "mermaid_config": "",
+    "png_folder": ""
 }

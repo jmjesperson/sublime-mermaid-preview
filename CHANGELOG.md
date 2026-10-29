@@ -8,6 +8,13 @@ minor versions may change behaviour or settings.
 
 ## [Unreleased]
 
+### Added
+
+- **New setting `png_folder`:** the folder where the Export PNG dialog opens, for example
+  `"~/Downloads"`. If it is empty, the dialog opens in the document's folder, as before. If the
+  folder does not exist, the dialog uses the document's folder and the status bar shows a
+  message.
+
 ## [0.1.1] - 2026-10-29
 
 ### Fixed
