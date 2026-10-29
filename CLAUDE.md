@@ -76,8 +76,11 @@ says that a change is not visible. It checks the files on disk and prints one of
   the path is this clone, and that the branch is the expected branch.
 - `PACKAGE CONTROL copy, version X`. Changes in this repository are **not** visible. To test
   them, run `scripts/dev.sh on`, and ask the user to restart Sublime.
-- `TEST ZIP built by dev.sh`. This is a fixed copy, made by `dev.sh zip`. It does not include
-  changes made after it was built.
+- `TEST ZIP built by dev.sh from <ref>`. This is a fixed copy, made by `dev.sh zip`. It does not
+  include changes made after it was built. It has a `package-metadata.json` with version
+  `9999.0.0`. Without this file, Package Control replaces the zip with the newest release each
+  time Sublime starts (seen on 2026-10-29). The high version also stops automatic upgrades.
+- `warning: Package Control replaced the test zip`. Run `scripts/dev.sh zip` again.
 - `RESTART NEEDED`. Sublime started before the last switch, so it may still use the old copy.
 
 Never assume that Sublime uses the development copy. When the work in Sublime is finished, ask
