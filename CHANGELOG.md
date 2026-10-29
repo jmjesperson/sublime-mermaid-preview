@@ -8,9 +8,11 @@ minor versions may change behaviour or settings.
 
 ## [Unreleased]
 
+## [0.2.0] - 2026-10-29
+
 ### Added
 
-- **New setting `png_folder`:** the folder where the Export PNG dialog opens, for example
+- **New setting `save_folder`:** the folder where the save dialog opens, for example
   `"~/Downloads"`. If it is empty, the dialog opens in the document's folder, as before. If the
   folder does not exist, the dialog uses the document's folder and the status bar shows a
   message.
@@ -73,6 +75,7 @@ First release.
 - **CI actions and tools are pinned:** actions and checked-out scripts to commit SHAs,
   `st-package-reviewer` to an exact version, and checkouts do not keep the token.
 
-[Unreleased]: https://github.com/jmjesperson/sublime-mermaid-preview/compare/0.1.1...HEAD
+[Unreleased]: https://github.com/jmjesperson/sublime-mermaid-preview/compare/0.2.0...HEAD
+[0.2.0]: https://github.com/jmjesperson/sublime-mermaid-preview/compare/0.1.1...0.2.0
 [0.1.1]: https://github.com/jmjesperson/sublime-mermaid-preview/compare/0.1.0...0.1.1
 [0.1.0]: https://github.com/jmjesperson/sublime-mermaid-preview/releases/tag/0.1.0
